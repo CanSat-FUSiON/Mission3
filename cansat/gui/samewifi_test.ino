@@ -1,7 +1,7 @@
 // Wi-Fiライブラリをインポート
 #include <WiFi.h>
 
-// Wi-Fi接続情報を入力
+// Wi-Fi接続情報を入力(**のところは自分で入力)
 const char* ssid     = "********";
 const char* password = "******";
 
