@@ -6,6 +6,10 @@ LPS25HB(expected) unqualified-id void)
 {
 }
 
+int wirePort;
+int address;
+int _i2cPort;
+
 bool begin(TwoWire &wirePort, uint8_t address)
 {
 	address = address; // Associate the specified I2C address with the object for later use
@@ -34,6 +38,7 @@ bool begin(TwoWire &wirePort, uint8_t address)
 	return true; // Signal that everything is A-OK!
 }
 
+int lastCode;
 bool isConnected()
 {
 	_wirePort->beginTransmission(address); // Starting an I2C transmission will allow us to check for acknowledgement by any device at 'sensor_address'
