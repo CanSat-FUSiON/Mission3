@@ -2,19 +2,18 @@
 
 #include <SparkFun_LPS25HB_Arduino_Library.h> // Click here to get the library: http://librarymanager/All#SparkFun_LPS25HB
 
-LPS25HB(expected) unqualified-id void)
+LPS25HB(unqualified-id void)
 {
 }
 
-int wirePort;
-int address;
+int sensor_address;
 int _i2cPort;
 
 bool begin(TwoWire &wirePort, uint8_t address)
 {
-	address = address; // Associate the specified I2C address with the object for later use
+	sensor_address = address; // Associate the specified I2C address with the object for later use
 
-	wiewPort = &wirePort; // This line keeps the 'address' of the Wire port to use associated with the object for later. See a tutorial on pointers for more information
+	_i2cPort = &wirePort; // This line keeps the 'address' of the Wire port to use associated with the object for later. See a tutorial on pointers for more information
 	//_i2cPort->begin();					 // The '->' notation is like accessing the member of an object with '.' except used with pointers
 	//_i2cPort->setClock(clock_frequency); // So here we called X.begin() and X.setClock() where X is the wire port the user specified. For example Wire.begin() and Wire.setClock()
 
@@ -41,8 +40,8 @@ bool begin(TwoWire &wirePort, uint8_t address)
 int lastCode;
 bool isConnected()
 {
-	_wirePort->beginTransmission(address); // Starting an I2C transmission will allow us to check for acknowledgement by any device at 'sensor_address'
-	if (_i2cPort->endTransmission() == 0)		 // If the device does not acknowledge then endTransmission() will return 1
+	_i2cPort->beginTransmission(address); // Starting an I2C transmission will allow us to check for acknowledgement by any device at 'sensor_address'
+	if (_i2cPort.endTransmission() == 0)		 // If the device does not acknowledge then endTransmission() will return 1
 	{
 		if (getID() == LPS25HB_DEVID) // If there was a response then we can make sure the device is in fact a LPS25HB by checking the ID
 		{
@@ -193,23 +192,23 @@ bool removeSetting(uint8_t reg_adr, uint8_t setting)
 
 bool read(uint8_t reg_adr, uint8_t *pdata, uint8_t size)
 {
-	_wirePort->beginTransmission(address); // Begin talking to the desired sensor
-	_wirePort->write(reg_adr | (1 << 7));		 // Setting the 7th bit (the MSb) in this tells the device that we want a 'multi-byte' read
-	// _wirePort->write(reg_adr);													// A multi-byte bit is not needed in this command
+	_i2cPort->beginTransmission(address); // Begin talking to the desired sensor
+	_i2cPort->write(reg_adr | (1 << 7));		 // Setting the 7th bit (the MSb) in this tells the device that we want a 'multi-byte' read
+	// _i2cPort->write(reg_adr);													// A multi-byte bit is not needed in this command
 	// AHA! It turns out that you DO need a multi-byte bit set in the first command here... who'da thunk it
 
-	if (_i2cPort->endTransmission(false) != 0) // Send a restart command. Do not release bus.
+	if (_i2cPort.endTransmission(false) != 0) // Send a restart command. Do not release bus.
 	{
 		lastCode = LPS25HB_CODE_ERR; // Sensor did not ACK
 		return false;
 	}
 
-	_i2cPort->requestFrom(sensor_address, size); // Default value of true used here to release bus once complete
+	_i2cPort.requestFrom(sensor_address, size); // Default value of true used here to release bus once complete
 	for (uint8_t indi = 0; indi < size; indi++)  //
 	{
-		if (_i2cPort->available())
+		if (_i2cPort.available())
 		{
-			*(pdata + indi) = _i2cPort->read(); // Use pointers to place the read data into the buffer that was specified by the user
+			*(pdata + indi) = _i2cPort.read(); // Use pointers to place the read data into the buffer that was specified by the user
 		}
 		else
 		{
@@ -225,11 +224,11 @@ bool read(uint8_t reg_adr, uint8_t *pdata, uint8_t size)
 
 bool write(uint8_t reg_adr, uint8_t *pdata, uint8_t size)
 {
-	_wirePort->beginTransmission(address); // Begin talking to the desired sensor
-	_wirePort->write(reg_adr | (1 << 7));		 // Specify a write to the desried register with the mutli-byte bit set so that consecutive writes will go to consecutive registers within the device
-	_wirePort->write(pdata, size);				 // Write all the bytes!
+	_i2cPort->beginTransmission(address); // Begin talking to the desired sensor
+	_i2cPort->write(reg_adr | (1 << 7));		 // Specify a write to the desried register with the mutli-byte bit set so that consecutive writes will go to consecutive registers within the device
+	_i2cPort->write(pdata, size);				 // Write all the bytes!
 
-	if (_wirePort->endTransmission() == 0)
+	if (_i2cPort->endTransmission() == 0)
 	{
 		lastCode = LPS25HB_CODE_NOM;
 		return true;
