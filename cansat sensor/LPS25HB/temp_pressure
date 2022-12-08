@@ -3,13 +3,6 @@
 #include <Adafruit_LPS2X.h>
 #include <Adafruit_Sensor.h>
 
-// For SPI mode, we need a CS pin
-#define LPS_CS 10
-// For software-SPI mode we need SCK/MOSI/MISO pins
-#define LPS_SCK 13
-#define LPS_MISO 12
-#define LPS_MOSI 11
-
 Adafruit_LPS25 lps;
 
 void setup(void) {
