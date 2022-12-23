@@ -3,7 +3,7 @@
 #define ADC_PIN 33 // アナログ入力端子
 // PWM出力端子設定
 #define PWM_OUT_PIN 0     // PWM出力端子番号（外部出力）
-#define PWM_LED_PIN 10    // PWM出力端子番号（本体LED赤）
+#define PWM_PIN 10    // PWM出力端子番号（本体）
 
 // PWM出力設定（周波数と分解能はチャンネルのペアでは同じに設定する）
 #define CH 1        // PWM出力チャンネル（0,1/ 2,3/ 4,5/ 6,7/ 8,9/ 10,11 /12,13 /14,15でペア）
@@ -25,12 +25,12 @@ void setup() {
 
   // PWM出力に使用する端子を出力設定
   pinMode(PWM_OUT_PIN, OUTPUT);     // 外部出力端子
-  pinMode(PWM_LED_PIN, OUTPUT);     // 本体LED
+  pinMode(PWM_PIN, OUTPUT);     // 本体
 
   // PWM初期設定
   ledcSetup(CH, FREQ, BIT_NUM);   // PWM設定（ﾁｬﾝﾈﾙ, 周波数, bit数）
   ledcAttachPin(PWM_OUT_PIN, CH); // PWMﾁｬﾝﾈﾙ割り当て（端子番号, ﾁｬﾝﾈﾙ）（外部出力）
-  ledcAttachPin(PWM_LED_PIN, CH); // PWMﾁｬﾝﾈﾙ割り当て（端子番号, ﾁｬﾝﾈﾙ）（本体LED）
+  ledcAttachPin(PWM_PIN, CH); // PWMﾁｬﾝﾈﾙ割り当て（端子番号, ﾁｬﾝﾈﾙ）（本体）
 }
 // メイン -------------------------------------------
 void loop() {
