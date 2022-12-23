@@ -1,0 +1,48 @@
+
+// 端子割り付け
+#define ADC_PIN 33 // アナログ入力端子
+// PWM出力端子設定
+#define PWM_OUT_PIN 0     // PWM出力端子番号（外部出力）
+#define PWM_LED_PIN 10    // PWM出力端子番号（本体LED赤）
+
+// PWM出力設定（周波数と分解能はチャンネルのペアでは同じに設定する）
+#define CH 1        // PWM出力チャンネル（0,1/ 2,3/ 4,5/ 6,7/ 8,9/ 10,11 /12,13 /14,15でペア）
+#define FREQ 4.9   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
+#define BIT_NUM 12  // bit数（1bit〜16bit）
+
+// 変数設定
+float ad_val;       // アナログ入力値格納用
+float duty;         // Duty比
+float resolution;   // 分解能
+float battery;      // バッテリー残量表示用
+bool state = false; // ボタン操作状態保持用
+
+// 初期設定 -----------------------------------------
+void setup() {
+  Serial.begin(9600); // シリアル出力初期化（今回は未使用）
+  // アナログ入力設定
+  pinMode(ADC_PIN, ANALOG); // アナログ入力
+
+  // PWM出力に使用する端子を出力設定
+  pinMode(PWM_OUT_PIN, OUTPUT);     // 外部出力端子
+  pinMode(PWM_LED_PIN, OUTPUT);     // 本体LED
+
+  // PWM初期設定
+  ledcSetup(CH, FREQ, BIT_NUM);   // PWM設定（ﾁｬﾝﾈﾙ, 周波数, bit数）
+  ledcAttachPin(PWM_OUT_PIN, CH); // PWMﾁｬﾝﾈﾙ割り当て（端子番号, ﾁｬﾝﾈﾙ）（外部出力）
+  ledcAttachPin(PWM_LED_PIN, CH); // PWMﾁｬﾝﾈﾙ割り当て（端子番号, ﾁｬﾝﾈﾙ）（本体LED）
+}
+// メイン -------------------------------------------
+void loop() {
+  // アナログ入力処理
+  ad_val = analogRead(ADC_PIN); // アナログ入力値（0〜4095）を取得
+  // アナログ入力値（0〜4095）を Duty比に換算
+  resolution = pow(2, BIT_NUM);         // 分解能（2のnビット乗）
+  duty = resolution * (ad_val / 4095);  // 換算
+
+  // PWM出力実行（以下の3ついずれか1つを有効にして動作確認）
+  //ledcWrite(CH, duty);       // チャンネルに指定した周波数、分解能で実行する場合（チャンネル、Duty比）
+  ledcWriteTone(CH, ad_val); // 周波数を指定して実行する場合（チャンネル、周波数）
+  }
+  
+ 
