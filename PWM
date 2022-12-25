@@ -1,10 +1,10 @@
 
-// 端子割り付け
-#define dir_2 3
-#define dir_1 6
 // PWM出力端子設定
 #define pwm_2 4     
-#define pwm_1 7   
+#define pwm_1 7
+#define dir_2 3
+#define dir_1 6
+ 
 
 // PWM出力設定（周波数と分解能はチャンネルのペアでは同じに設定する）
 #define CH 1        // PWM出力チャンネル（0,1/ 2,3/ 4,5/ 6,7/ 8,9/ 10,11 /12,13 /14,15でペア）
@@ -21,14 +21,13 @@ bool state = false; // ボタン操作状態保持用
 // 初期設定 -----------------------------------------
 void setup() {
   Serial.begin(9600); // シリアル出力初期化（今回は未使用）
-  // アナログ入力設定
-  pinMode(dir_2, ANALOG); 
-  pinMode(dir_1, ANALOG); // アナログ入力
 
   // PWM出力に使用する端子を出力設定
   pinMode(pwm_2, OUTPUT);     
   pinMode(pwm_1, OUTPUT);     
-  
+  pinMode(dir_1, OUTPUT);
+  pinMode(dir_2, OUTPUT);
+
   // PWM初期設定
   ledcSetup(CH, FREQ, BIT_NUM);   // PWM設定（ﾁｬﾝﾈﾙ, 周波数, bit数）
   ledcAttachPin(pwm_2, CH); // PWMﾁｬﾝﾈﾙ割り当て（端子番号, ﾁｬﾝﾈﾙ）
