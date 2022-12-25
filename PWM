@@ -30,17 +30,14 @@ void setup() {
 
   // PWM初期設定
   ledcSetup(CH, FREQ, BIT_NUM);   // PWM設定（ﾁｬﾝﾈﾙ, 周波数, bit数）
-  ledcAttachPin(pwm_2, CH); // PWMﾁｬﾝﾈﾙ割り当て（端子番号, ﾁｬﾝﾈﾙ）
-  ledcAttachPin(pwm_1, CH); 
+  ledcAttachPin(dir_2, CH); // PWMﾁｬﾝﾈﾙ割り当て（端子番号, ﾁｬﾝﾈﾙ）
+  ledcAttachPin(dir_1, CH); 
 }
 // メイン -------------------------------------------
 void loop() {
-  // アナログ入力処理
-  ad_val = analogRead(dir_2);
-  ad_val = analogRead(dir_1); // アナログ入力値（0〜4095）を取得
-  // アナログ入力値（0〜4095）を Duty比に換算
-  resolution = pow(2, BIT_NUM);         // 分解能（2のnビット乗）
-  duty = resolution * (ad_val / 4095);  // 換算
+  
+digitalWrite(pwm_1,HIGH);
+digitalWrite(pwm_2,HIGH);
 
   // PWM出力実行（以下の3ついずれか1つを有効にして動作確認）
   //ledcWrite(CH, duty);       // チャンネルに指定した周波数、分解能で実行する場合（チャンネル、Duty比）
