@@ -35,13 +35,15 @@ void setup() {
 }
 // メイン -------------------------------------------
 void loop() {
-  
+int reading = 0;
+int output=0;
+int opposite_output=0;
 digitalWrite(pwm_1,HIGH);
 digitalWrite(pwm_2,HIGH);
+for (int i=0;i&amp;lt;5;i++)
 
   // PWM出力実行（以下の3ついずれか1つを有効にして動作確認）
-  //ledcWrite(CH, duty);       // チャンネルに指定した周波数、分解能で実行する場合（チャンネル、Duty比）
-  ledcWriteTone(CH, ad_val); // 周波数を指定して実行する場合（チャンネル、周波数）
+ ledcWrite(CH, duty);       // チャンネルに指定した周波数、分解能で実行する場合（チャンネル、Duty比）
   }
   
  
