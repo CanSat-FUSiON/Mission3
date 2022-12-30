@@ -1,0 +1,42 @@
+//ESP32 + GPSモジュール NEO-6M 
+
+#include "TinyGPS++.h" //http://arduiniana.org/libraries/tinygpsplus/
+#include "HardwareSerial.h"
+//#include "Wire.h"
+//#include "SSD1306.h"
+//SSD1306 display(0x3c, 21, 22); //I2Cアドレス0x3c,SDA->GPIO21,SCL->GPIO22
+TinyGPSPlus gps;
+HardwareSerial serial2(19); //ESP32_GPIO16->GPS_TX , ESP32_GPIO17->GPS_RX
+
+void setup() {
+  //display.init();
+  pinMode(19, OUTPUT);
+  pinMode(18, INPUT);
+  digitalWrite(19, LOW);
+  Serial.begin(9600);
+  Serial.println("Start GPS... ");
+  //display.clear();
+  //display.drawString(0,0,"Start GPS... ");
+  //display.display();
+  serial2.begin(9600);
+}
+
+void loop() {
+  if (serial2.available()){
+   char c = serial2.read();
+   gps.encode(c);
+   if (gps.location.isUpdated()) {
+    digitalWrite(19, HIGH);
+    Serial.print("LAT: "); Serial.println(gps.location.lat(), 9);
+    Serial.print("LONG: "); Serial.println(gps.location.lng(), 9);
+    //display.clear();
+    //display.drawString(0,0,String(gps.time.hour()+9)+":"+String(gps.time.minute())+":"+String(gps.time.second())+" JST");
+    //display.drawString(0,20,"LAT : "+String(gps.location.lat(),9));
+    //display.drawString(0,35,"LNG : "+String(gps.location.lng(),9));
+   // display.drawString(0,50,"ALT : "+String(gps.altitude.meters())+"m");
+    //display.display();
+  } else{
+    digitalWrite(19, LOW);
+  }
+ }
+}
