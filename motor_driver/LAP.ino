@@ -1,5 +1,3 @@
-
-
 // PWM出力端子設定
 #define pwm_1 14
 #define dir_1 27
