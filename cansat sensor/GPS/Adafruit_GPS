@@ -31,8 +31,8 @@ uint32_t timer = millis();
 
 void setup()
 {
-  pinMode(19, OUTPUT);   // 出力に設定
-  pinMode(18,INPUT);
+  pinMode(16, OUTPUT);   // 出力に設定
+  pinMode(17,INPUT);
 
   //while (!Serial);  // uncomment to have the sketch wait until Serial is ready
 
