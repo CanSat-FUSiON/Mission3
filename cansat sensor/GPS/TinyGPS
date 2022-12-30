@@ -6,7 +6,7 @@
 //#include "SSD1306.h"
 //SSD1306 display(0x3c, 21, 22); //I2Cアドレス0x3c,SDA->GPIO21,SCL->GPIO22
 TinyGPSPlus gps;
-HardwareSerial serial2(19); //ESP32_GPIO16->GPS_TX , ESP32_GPIO17->GPS_RX
+HardwareSerial serial(19,18); //ESP32_GPIO16->GPS_TX , ESP32_GPIO17->GPS_RX
 
 void setup() {
   //display.init();
@@ -22,8 +22,8 @@ void setup() {
 }
 
 void loop() {
-  if (serial2.available()){
-   char c = serial2.read();
+  if (serial.available()){
+   char c = serial.read();
    gps.encode(c);
    if (gps.location.isUpdated()) {
     digitalWrite(19, HIGH);
