@@ -39,14 +39,14 @@ void setup() {
 // メイン -------------------------------------------
 void loop() {
   // PWM出力実行（以下の3ついずれか1つを有効にして動作確認）
-  ledcWrite(1, 0);       // チャンネルに指定した周波数、分解能で実行する場合（チャンネル、Duty比)
+  ledcWrite(1, 0); //フル正回転  // チャンネルに指定した周波数、分解能で実行する場合（チャンネル、Duty比)
   delay(5000);
-  ledcWrite(1, 4096); //反対側にフル回転
+  ledcWrite(1, 4096); //フル逆回転
   delay(5000);
   ledcWrite(1, 2048); //active ブレーキ
   delay(5000);
   for (int i = 0; i <= 4096; i++) {
-    ledcWrite(1, i); //active ブレーキ
+    ledcWrite(1, i); //フル正回転 --> active ブレーキ --> フル逆回転
     delay(10);
   }
   delay(5000);
