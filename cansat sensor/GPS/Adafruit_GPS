@@ -31,6 +31,8 @@ uint32_t timer = millis();
 
 void setup()
 {
+  pinMode(19, OUTPUT);   // 出力に設定
+
   //while (!Serial);  // uncomment to have the sketch wait until Serial is ready
 
   // connect at 115200 so we can read the GPS fast enough and echo without dropping chars
