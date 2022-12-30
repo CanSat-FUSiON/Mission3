@@ -9,16 +9,11 @@
 #define BIT_NUM 12  // bit数（1bit〜16bit）
 
 // 変数設定
-float ad_val;       // アナログ入力値格納用
 float duty;         // Duty比
 float resolution;   // 分解能
-float battery;      // バッテリー残量表示用
-bool state = false; // ボタン操作状態保持用
 
 // 初期設定 -----------------------------------------
 void setup() {
-  Serial.begin(115200); // シリアル出力初期化（今回は未使用）
-
   // PWM出力に使用する端子を出力設定
   pinMode(pwm_1, OUTPUT);
   pinMode(dir_1, OUTPUT);
@@ -36,8 +31,7 @@ void setup() {
 }
 // メイン -------------------------------------------
 void loop() {
-  // PWM出力実行（以下の3ついずれか1つを有効にして動作確認）
-  ledcWrite(1, 0); //フル正回転  // チャンネルに指定した周波数、分解能で実行する場合（チャンネル、Duty比)
+  ledcWrite(1, 0); //フル正回転
   delay(5000);
   ledcWrite(1, 4096); //フル逆回転
   delay(5000);
