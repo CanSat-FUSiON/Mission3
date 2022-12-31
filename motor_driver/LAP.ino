@@ -31,14 +31,14 @@ void setup() {
 }
 // メイン -------------------------------------------
 void loop() {
-  ledcWrite(1, 0); //フル正回転
+  ledcWrite(CH, 0); //フル正回転
   delay(5000);
-  ledcWrite(1, 4096); //フル逆回転
+  ledcWrite(CH, 4096); //フル逆回転
   delay(5000);
-  ledcWrite(1, 2048); //active ブレーキ
+  ledcWrite(CH, 2048); //active ブレーキ
   delay(5000);
   for (int i = 0; i <= 4096; i++) {
-    ledcWrite(1, i); //フル正回転 --> active ブレーキ --> フル逆回転
+    ledcWrite(CH, i); //フル正回転 --> active ブレーキ --> フル逆回転
     delay(10);
   }
   delay(5000);
