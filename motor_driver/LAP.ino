@@ -1,6 +1,6 @@
 // PWM出力端子設定
-#define pwm_1 14
-#define dir_1 27
+#define pwm 14
+#define dir 27
 
 
 // PWM出力設定（周波数と分解能はチャンネルのペアでは同じに設定する）
@@ -8,21 +8,17 @@
 #define FREQ 20000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
 #define BIT_NUM 12  // bit数（1bit〜16bit）
 
-// 変数設定
-float duty;         // Duty比
-float resolution;   // 分解能
-
 // 初期設定 -----------------------------------------
 void setup() {
   // PWM出力に使用する端子を出力設定
-  pinMode(pwm_1, OUTPUT);
-  pinMode(dir_1, OUTPUT);
+  pinMode(pwm, OUTPUT);
+  pinMode(dir, OUTPUT);
 
   // PWM初期設定
   ledcSetup(CH, FREQ, BIT_NUM);   // PWM設定（ﾁｬﾝﾈﾙ, 周波数, bit数）
-  ledcAttachPin(dir_1, CH);
+  ledcAttachPin(dir, CH);
 
-  digitalWrite(pwm_1, HIGH);
+  digitalWrite(pwm, HIGH);
 }
 // メイン -------------------------------------------
 void loop() {
