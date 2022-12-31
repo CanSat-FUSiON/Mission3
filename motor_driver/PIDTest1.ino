@@ -2,7 +2,6 @@
 #define ENCA 35
 #define ENCB 34
 
-// globals
 long prevT = 0;
 int posPrev = 0;
 // Use the "volatile" directive for variables
@@ -21,15 +20,10 @@ int pwr;
 #define pwm 14
 #define dir 27
 
-
 // PWM出力設定（周波数と分解能はチャンネルのペアでは同じに設定する）
 #define CH 1        // PWM出力チャンネル（0,1/ 2,3/ 4,5/ 6,7/ 8,9/ 10,11 /12,13 /14,15でペア）
 #define FREQ 20000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
 #define BIT_NUM 12  // bit数（1bit〜16bit）
-
-// 変数設定
-float duty;         // Duty比
-float resolution;   // 分解能
 
 void setup() {
   Serial.begin(115200);
@@ -72,7 +66,7 @@ void loop() {
 
   // Set a target
   //float vt = 400 * (sin(currT / 1e6) > 0);
-  float vt = 400*sin(currT / 1e6);
+  float vt = 400 * sin(currT / 1e6);
 
   // Compute the control signal u
   float e = vt - vFilt;
