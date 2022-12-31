@@ -22,11 +22,6 @@ void setup() {
   ledcSetup(CH, FREQ, BIT_NUM);   // PWM設定（ﾁｬﾝﾈﾙ, 周波数, bit数）
   ledcAttachPin(dir_1, CH);
 
-  int reading = 0;
-  int output = 0;
-  int opposite_output = 0;
-  delay(10000);
-
   digitalWrite(pwm_1, HIGH);
 }
 // メイン -------------------------------------------
