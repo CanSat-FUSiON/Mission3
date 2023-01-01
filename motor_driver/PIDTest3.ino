@@ -81,36 +81,37 @@ class LowPass
 };
 
 // Filter instance
-LowPass<2> lp(3, 1e3, true);
+LowPass<2> lp0(3, 1e3, true);
+LowPass<2> lp1(3, 1e3, true);
 
-#define N_MOTORS 1
+// Motor settings
+#define FREQ 20000
+#define BIT_NUM 12
+#define PPR 244.8
+#define N_MOTORS 2
 
-// Pins
+// Encoder and motor settings
 const int encA[] = {35, 39};
 const int encB[] = {34, 36};
 const int pwm[] = {14, 26};
 const int dir[] = {27, 25};
 
-// PWM出力設定（周波数と分解能はチャンネルのペアでは同じに設定する）
-#define FREQ 20000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
-#define BIT_NUM 12  // bit数（1bit〜16bit）
-#define PPR 244.8
-
-// Globals
+// Encoder and motor global variables
 long currT, prevT = 0;
 int pos[N_MOTORS], power;
 float deltaT, target[N_MOTORS], rpm[N_MOTORS], rpmFilt[N_MOTORS],  e[N_MOTORS],
       eprev[N_MOTORS], dedt[N_MOTORS], eintegral[N_MOTORS], u[N_MOTORS];
 int prevPos[] = {0, 0};
 volatile int pos_i[] = {0, 0};
-float kp[] = {40, 1};
-float ki[] = {30, 1};
-float kd[] = {1.5, 1};
+float kp[] = {40, 40};
+float ki[] = {30, 30};
+float kd[] = {1.5, 1.5};
 
+// Interrupt service routine (ISR)
 template <int i>
 void readEncoder() {
   // Read encoder B when ENCA rises
-  int b = digitalRead(encB[i]);
+  bool b = digitalRead(encB[i]);
   if (b > 0) {
     // If B is high, increment backward
     pos_i[i]--;
@@ -121,6 +122,7 @@ void readEncoder() {
   }
 }
 
+// PID Controller
 void PIDController(int i) {
   e[i] = target[i] - rpmFilt[i];
   dedt[i] = (e[i] - eprev[i]) / deltaT;
@@ -141,6 +143,7 @@ void PIDController(int i) {
 void setup() {
   Serial.begin(115200);
 
+  // Set up the encoder and motor pins
   for (int i = 0; i < N_MOTORS; i++) {
     pinMode(encA[i], INPUT);
     pinMode(encB[i], INPUT);
@@ -151,44 +154,54 @@ void setup() {
     ledcAttachPin(dir[i], i);
   }
 
+  // Attach the interrupt pins to encoders
   attachInterrupt(digitalPinToInterrupt(encA[0]), readEncoder<0>, RISING);
   attachInterrupt(digitalPinToInterrupt(encA[1]), readEncoder<1>, RISING);
 }
 
 void loop() {
-  target[0] = 400 * sin(currT / 1e6 * 16);
 
+  // Set the target RPM values
+  target[0] = 400 * sin(currT / 1e6 * 5);
+  target[1] = -500 * sin(currT / 1e6 * 2);
+
+  // Initialize the position variable
   for (int i = 0; i < N_MOTORS; i++) {
     pos[i] = 0;
   }
 
   // Read the encoders
-  noInterrupts(); // disable interrupts temporarily while reading to avoid misreading
+  noInterrupts(); // Disable interrupts temporarily while reading to avoid misreading
   for (int i = 0; i < N_MOTORS; i++) {
     pos[i] = pos_i[i];
   }
-  interrupts(); // turn interrupts back on
+  interrupts();
 
-  // Compute time difference
+  // Compute the time difference
   currT = micros();
   deltaT = ((float) (currT - prevT)) / 1.0e6;
   prevT = currT;
 
-  // Loop through the motors
+  // Compute the RPM
   for (int i = 0; i < N_MOTORS; i++) {
     rpm[i] = ((pos[i] - prevPos[i]) / deltaT) / PPR * 60.0;
     prevPos[i] = pos[i];
-    rpmFilt[i] = lp.filt(rpm[i]);
-    // evaluate the control signal
+  }
+
+  // Filter the RPM using a 2nd order low pass filter
+  rpmFilt[0] = lp0.filt(rpm[0]);
+  rpmFilt[1] = lp1.filt(rpm[1]);
+
+  // Evaluate the control signal and control the motors
+  for (int i = 0; i < N_MOTORS; i++) {
     PIDController(i);
     ledcWrite(i, power);
   }
 
-  for (int i = 0; i < N_MOTORS; i++) {
-    Serial.print("Variable_1:");
-    Serial.print(target[i]);
-    Serial.print(",");
-    Serial.print("Variable_2:");
-    Serial.println(rpmFilt[i]);
-  }
+  // Print the motors' filtered RPM
+  Serial.print("Variable_1:");
+  Serial.print(rpmFilt[0]);
+  Serial.print(",");
+  Serial.print("Variable_2:");
+  Serial.println(rpmFilt[1]);
 }
