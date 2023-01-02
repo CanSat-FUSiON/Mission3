@@ -84,6 +84,10 @@ class LowPass
 LowPass<2> lp0(3, 1e3, true);
 LowPass<2> lp1(3, 1e3, true);
 
+// ループ時間が長くなるほど測定ノイズが多くなるため、滑らかな出力のために遮断周波数を下げる必要がある
+//LowPass<2> lp0(0.6, 1e3, true);
+//LowPass<2> lp1(0.6, 1e3, true);
+
 // Motor settings
 #define FREQ 20000
 #define BIT_NUM 12
