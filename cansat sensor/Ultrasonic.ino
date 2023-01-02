@@ -90,6 +90,7 @@ LowPass<2> lp(0.7, 1e3, true);
 #define TRIGGER_PIN  4
 #define ECHO_PIN     5
 #define MAX_DISTANCE 400
+#define MIN_DISTANCE 2
 
 // Constructor for ultrasonic sensor library
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
@@ -124,7 +125,7 @@ void loop() {
   duration = sonar.ping_median(iterations);
   distance = (duration / 2) * soundsp;
 
-  if (distance <= 400 && distance >= 2) {
+  if (distance <= MAX_DISTANCE && distance >= MIN_DISTANCE) {
     // Valid distance
     kaldist = kalman(distance);
     lpdist = lp.filt(distance);
