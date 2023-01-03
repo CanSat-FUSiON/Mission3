@@ -132,6 +132,15 @@ void PIDController(int i) {
   dedt[i] = (e[i] - eprev[i]) / deltaT;
   eprev[i] = e[i];
   eintegral[i] = eintegral[i] + e[i] * deltaT;
+  
+  // Integrator anti-windup
+  if (ki[i] * eintegral[i] > 2048) {
+    eintegral[i] = 2048 / ki[i];
+  } else if (ki[i] * eintegral[i] < -2048) {
+    eintegral[i] = -2048 / ki[i];
+  }
+  
+  // Compute the input value of actuator
   u[i] = kp[i] * e[i] + ki[i] * eintegral[i] + kd[i] * dedt[i];
 
   // Set the motor speed and direction
@@ -166,6 +175,7 @@ void setup() {
 void loop() {
 
   // Set the target RPM values
+  // Target値の設定について：Target値の変化が急だと、応答が振動する可能性があるため、一次ローパスフィルター（一次遅れ系）を入れた方がいい
   target[0] = 400 * sin(currT / 1e6 * 5);
   target[1] = -500 * sin(currT / 1e6 * 2);
 
