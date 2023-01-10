@@ -104,10 +104,10 @@ void loop(void)
   printEvent(&accelerometerData);
   printEvent(&gravityData);
 
-  int8_t boardTemp = bno.getTemp();
-  Serial.println();
-  Serial.print(F("temperature: "));
-  Serial.println(boardTemp);
+  //int8_t boardTemp = bno.getTemp();
+  //Serial.println();
+  //Serial.print(F("temperature: "));
+  //Serial.println(boardTemp);
 
   uint8_t system, gyro, accel, mag = 0;
   bno.getCalibration(&system, &gyro, &accel, &mag);
