@@ -105,7 +105,7 @@ return altitude = (pow(referencePressure / getPressure(), 1 / 5.257) - 1)*(getTe
 
 if(altitude == 0){
 unsigned long start = millis();
-while (millis() < start + 5000) { // 5秒経過するまで
+while (millis() < start + 5000) { 
 Serial.println("HIGH");
   digitalWrite(12,HIGH); 
 }
