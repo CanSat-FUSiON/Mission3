@@ -40,7 +40,11 @@ void loop(void)
   Serial.print(" m , Temperature = ");
   Serial.print(getTemperature());
   Serial.println(" degree");
-}
+ 
+  if(altitude < 1){
+    exit(0);
+  }
+  }
 
 int whoAmI() {
   Wire.beginTransmission(LPS25H_ADDRESS);
