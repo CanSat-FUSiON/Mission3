@@ -20,4 +20,4 @@ dst = cv.bitwise_and(img, img, mask=frame_mask)
 cv.imshow("img", dst)
 
 if cv.waitKey(0) & 0xFF == ord('q'):
-    #cv.destroyAllWindows()
+    cv.destroyAllWindows()
