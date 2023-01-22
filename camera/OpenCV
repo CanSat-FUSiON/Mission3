@@ -8,8 +8,8 @@ img = cv.imread("C:/sample.jpg")
 hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
 
 #色検出しきい値の設定
-lower = np.array([150,64,0])
-upper = np.array([179,255,255])
+lower = np.array([90,64,0])
+upper = np.array([150,255,255])
 
 #色検出しきい値範囲内の色を抽出するマスクを作成
 frame_mask = cv.inRange(hsv, lower, upper)
@@ -20,5 +20,4 @@ dst = cv.bitwise_and(img, img, mask=frame_mask)
 cv.imshow("img", dst)
 
 if cv.waitKey(0) & 0xFF == ord('q'):
-
-cv.imwrite("C:sample_red.img")
+    cv.destroyAllWindows()
