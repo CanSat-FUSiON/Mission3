@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 
 #画像データの読み込み
-img = cv.imread("sample.jpg")
+img = cv.imread("C:/sample.jpg")
 
 #BGR色空間からHSV色空間への変換
 hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
@@ -19,5 +19,4 @@ dst = cv.bitwise_and(img, img, mask=frame_mask)
 
 cv.imshow("img", dst)
 
-if cv.waitKey(0) & 0xFF == ord('q'):
-    cv.destroyAllWindows()
+cv2.imwrite("C:sample_red.img")
