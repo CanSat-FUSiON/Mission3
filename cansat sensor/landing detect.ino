@@ -99,9 +99,12 @@ float getTemperature() {
    
   return 42.5 + tData / 480.0;
 
-return altitude = (pow(referencePressure / getPressure(), 1 / 5.257) - 1)*(getTemperature() + 273.15) / 0.0065; 
+//return altitude = (pow(referencePressure / getPressure(), 1 / 5.257) - 1)*(getTemperature() + 273.15) / 0.0065; 
 //return altitude = pow((44.331514 - getPressure()) / 11.880516, 5.255877)
 //下が気温を使わない高度の出し方です。
+
+double n = pow(getPressure(),1/5.255877);
+return altitude = 44.331514 - n*11.880516;
 
 if(altitude == 0){
 unsigned long start = millis();
