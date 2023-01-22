@@ -22,7 +22,7 @@ dst = cv.bitwise_and(img, img, mask=frame_mask)
 #if cv.waitKey(0) & 0xFF == ord('q'):
     #cv.destroyAllWindows()
 
-output = cv2.bitwise_and(hsv, hsv, mask = mask)
+output = cv.bitwise_and(hsv, hsv, mask = mask)
 
-cv2.imwrite("mask_img.jpg", output)
-Image(filename='mask_img.jpg') 
+cv.imwrite("mask_img.jpg", output)
+
