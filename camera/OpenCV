@@ -19,4 +19,4 @@ dst = cv.bitwise_and(img, img, mask=frame_mask)
 
 cv.imshow("img", dst)
 
-cv2.imwrite("C:sample_red.img")
+cv.imwrite("C:sample_red.img")
