@@ -17,7 +17,12 @@ frame_mask = cv.inRange(hsv, lower, upper)
 #論理演算で色検出
 dst = cv.bitwise_and(img, img, mask=frame_mask)
 
-cv.imshow("img", dst)
+#cv.imshow("img", dst)
 
-if cv.waitKey(0) & 0xFF == ord('q'):
-    cv.destroyAllWindows()
+#if cv.waitKey(0) & 0xFF == ord('q'):
+    #cv.destroyAllWindows()
+
+output = cv2.bitwise_and(hsv, hsv, mask = mask)
+
+cv2.imwrite("mask_img.jpg", output)
+Image(filename='mask_img.jpg') 
