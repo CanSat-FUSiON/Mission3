@@ -9,7 +9,7 @@
 #define LPS25H_TEMP_OUT_L   0x2b
 #define LPS25H_TEMP_OUT_H   0x2c
 
-volatile float altitude = 0;//[m]換算した高度
+volatile float altitude;//[m]換算した高度
 volatile float referencePressure = 1013.15;//高度計算に使用する基準高度での大気圧[hPa]。ここは随時変える。
 
 void setup(void)
@@ -99,12 +99,12 @@ float getTemperature() {
    
   return 42.5 + tData / 480.0;
 
-//return altitude = (pow(referencePressure / getPressure(), 1 / 5.257) - 1)*(getTemperature() + 273.15) / 0.0065; 
+return altitude = ((pow(referencePressure / getPressure(), 1 / 5.257) - 1)*(getTemperature() + 273.15)) / 0.0065; 
 //return altitude = pow((44.331514 - getPressure()) / 11.880516, 5.255877)
 //下が気温を使わない高度の出し方です。
 
-double n = pow(getPressure(),1/5.255877);
-return altitude = 44.331514 - n*11.880516;
+//double n = pow(getPressure(),1/5.255877);
+//return altitude = 44.331514 - n*11.880516;
 
 if(altitude == 0){
 unsigned long start = millis();
