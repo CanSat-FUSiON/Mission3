@@ -9,8 +9,8 @@
 #define LPS25H_TEMP_OUT_L   0x2b
 #define LPS25H_TEMP_OUT_H   0x2c
 
-volatile float altitude;//[m]換算した高度
-volatile float referencePressure = 1013.15;//高度計算に使用する基準高度での大気圧[hPa]。ここは随時変える。
+//volatile float altitude;//[m]換算した高度
+volatile float referencePressure = 1026.26;//高度計算に使用する基準高度での大気圧[hPa]。ここは随時変える。
 
 void setup(void)
 {
@@ -36,7 +36,7 @@ void loop(void)
   Serial.print("Pressure = ");
   Serial.print(getPressure());
   Serial.print(" hPa ,Altitude = ");
-  Serial.print(altitude);
+  Serial.print(altitude());
   Serial.print(" m , Temperature = ");
   Serial.print(getTemperature());
   Serial.println(" degree");
@@ -98,26 +98,33 @@ float getTemperature() {
   }
    
   return 42.5 + tData / 480.0;
+}
 
-return altitude = ((pow(referencePressure / getPressure(), 1 / 5.257) - 1)*(getTemperature() + 273.15)) / 0.0065; 
-//return altitude = pow((44.331514 - getPressure()) / 11.880516, 5.255877);
+volatile float altitude(){
+  //[m]換算した高度
+  //return altitude = ((pow(referencePressure / getPressure(), 1 / 5.257) - 1)*(getTemperature() + 273.15)) / 0.0065;
+    return ((pow(referencePressure / getPressure(), 1 / 5.257) - 1)*(getTemperature() + 273.15)) / 0.0065; 
+   // return altitude = pow((44.331514 - getPressure()) / 11.880516, 5.255877);
 //下が気温を使わない高度の出し方です。
 
-//double n = pow(getPressure(),1/5.255877);
-//return altitude = 44.331514 - n*11.880516;
+ // double n = pow(getPressure(),1/5.255877);
+ // return 44.331514 - n*11.880516;
 
-if(altitude == 0){
-unsigned long start = millis();
-while (millis() < start + 5000) { 
-Serial.println("HIGH");
+if(float (altitude()) < 1){
+//unsigned long start = millis();
+//while (millis() < start + 5000) { 
+  Serial.println("HIGH");
   digitalWrite(12,HIGH); 
-}
-delay(2500);
-} else{
+  delay(5000);
+
+  Serial.println("LOW");
+  digitalWrite(12,LOW);
+} 
+
+else{
 Serial.println("LOW");
   digitalWrite(12,LOW);
-  delay(2500);
+ // delay(2500);
 }
-
+}
  
-}
