@@ -17,8 +17,8 @@ frame_mask = cv.inRange(hsv, lower, upper)
 #論理演算で色検出
 dst = cv.bitwise_and(img, img, mask=frame_mask)
 
-cv.imshow("jpg", dst)
-cv.imwrite("jpg", dst)
+cv.imshow("red.jpg", dst)
+cv.imwrite("red.jpg", dst)
 
 if cv.waitKey(0) & 0xFF == ord('q'):
     cv.destroyAllWindows()
