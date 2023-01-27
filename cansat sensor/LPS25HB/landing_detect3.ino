@@ -58,20 +58,6 @@ void loop(void)
     }else{
     }
     }
- /* }else if(1< altitude() < gnd_T + 10){
-    Serial.println("rising or descending...");
-  }else(altitude() < 1){
-      unsigned long start = millis();
-    if(millis() > start + 10000){
-      Serial.println("HIGH");
-      digitalWrite(12,HIGH); 
-      delay(5000);
-
-      Serial.println("LOW");
-      digitalWrite(12,LOW);
-    }else(){
-      delay(5000);
-    }*/
    
     //whileで無限ループ(?)
   }
