@@ -59,7 +59,8 @@ void loop(void)
     }
     }
    
-    //whileで無限ループ(?)
+    while(1){
+    }
   }
 }
 
