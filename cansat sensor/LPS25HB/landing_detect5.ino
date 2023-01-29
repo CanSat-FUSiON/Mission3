@@ -32,7 +32,13 @@ void setup(void)
 
 void loop(void)
 {
-
+Serial.print("Pressure = ");
+  Serial.print(getPressure());
+  Serial.print(" hPa ,Altitude = ");
+  Serial.print(altitude());
+  Serial.print(" m , Temperature = ");
+  Serial.print(getTemperature());
+  Serial.println(" degree");
   
 if(float(altitude()) > float(gnd_T) + 10){
   delay(20000);//10mのとこから1mのところまでおちてくる時間。20秒待機した後につぎのifの判断に移るってなるはず。
