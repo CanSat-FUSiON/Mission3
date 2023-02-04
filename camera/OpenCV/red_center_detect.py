@@ -14,11 +14,11 @@ h = hsv[:, :, 0]
 s = hsv[:, :, 1]
 v = hsv[:, :, 2]
 #ベース画像と同じ大きさの配列を作成
-img_mikan=np.zeros((height,width,3),np.uint8)
+img=np.zeros((height,width,3),np.uint8)
 #赤色を指定
-img_mikan[(h <270) & (h > 240) & (s > 50) & (v > 50)] = 255　#屋外でのHSVのログから決めるしかなさそう
+img[(h <270) & (h > 240) & (s > 50) & (v > 50)] = 255　#屋外でのHSVのログから決めるしかなさそう
 #赤の領域だけの画像を作成
-cv2.imwrite(gray_pic,np.array(img_mikan))
+cv2.imwrite(gray_pic,np.array(img))
 #作成した画像を読み込み
 img_gray = cv2.imread(gray_pic,cv2.IMREAD_GRAYSCALE)
 #読み込んだ画像の重心、輪郭を取得
