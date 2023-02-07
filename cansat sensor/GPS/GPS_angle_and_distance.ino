@@ -21,6 +21,13 @@ float equator = 6378.137;
 float LatA = 38.9854;
 float LongA = 135.9876;      //コーンの緯度・経度入力
 
+float Angle(){
+  return (90-(atan2(sin((LatA)-(gps_lat)),(cos(gps_lat)*tan(LatA)-sin(gps_lat)*cos((LatA)-(gps_lat))))));
+}
+float Distance(){
+  return (equator)*acos(sin(gps_lat)*sin(LatA)+cos(gps_lat)*cos(LatA)*cos((LatA)-(gps_lat)));
+}
+
 /////////////////////////////////////////////
 
 void setup() {
@@ -38,7 +45,8 @@ void loop(){
     if (gps.location.isUpdated()) {  
       gps_lat = gps.location.lat();
       gps_longt = gps.location.lng();
-      Serial.print(millis());
+      //Serial.print(millis());
+      //GPSの値取得
       Serial.print("LAT:  "); Serial.println(gps_lat,9);
       Serial.print("LONG: "); Serial.println(gps_longt,9);
 
@@ -48,10 +56,8 @@ void loop(){
 
   
   Serial.print("Direction = ");                               //目的地Aの方角(°）
-  //Serial.print(atan2((LongA - gps_longt) * 1.23, (LatA - gps_lat)) * 57.3 + 180);
-  Serial.print(90-(atan2(sin((LatA)-(gps_lat)),(cos(gps_lat)*tan(LatA)-sin(gps_lat)*cos((LatA)-(gps_lat))))));
+  Serial.print(Angle());
   Serial.print("deg:Distance = ");                             //目的地A迄の距離(m)
-  //Serial.print(sqrt(pow(LongA - gps_longt, 2) + pow(LatA - gps_lat, 2)) * 99096.44, 0);
-  Serial.print((equator)*acos(sin(gps_lat)*sin(LatA)+cos(gps_lat)*cos(LatA)*cos((LatA)-(gps_lat))));
+  Serial.print(Distance());
   Serial.println("m");
 }
