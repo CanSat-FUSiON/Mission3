@@ -4,6 +4,9 @@
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 #include <TinyGPS++.h>
+#include <math.h> 
+
+
 
 //MD-----------------------------------------------
 
@@ -169,11 +172,26 @@ volatile float referencePressure = 1013.15;//高度計算に使用する基準�
 
 TinyGPSPlus gps;
 
+double atan(double x);
+//double atan2(double y, double x);
+
 float gps_lat; //緯度
 float gps_longt; //経度 
 
 int RX_PIN = 19;
 int TX_PIN = 18;
+int counter = 0;
+
+float equator = 6378.137;
+float LatA = 38.9854;
+float LongA = 135.9876;      //コーンの緯度・経度入力
+
+float Angle(){
+  return (90-(atan2(sin((LatA)-(gps_lat)),(cos(gps_lat)*tan(LatA)-sin(gps_lat)*cos((LatA)-(gps_lat))))));
+}
+float Distance(){
+  return (equator)*acos(sin(gps_lat)*sin(LatA)+cos(gps_lat)*cos(LatA)*cos((LatA)-(gps_lat)));
+}
 
 void setup(void)
 {
@@ -354,11 +372,19 @@ if(float(altitude()) > float(gnd_T) + 10){
 
       gps_lat = gps.location.lat();
       gps_longt = gps.location.lng();
+      //Serial.print(millis());
+      //GPSの値取得
       Serial.print("LAT:  "); Serial.println(gps_lat,9);
       Serial.print("LONG: "); Serial.println(gps_longt,9);
      
     }
   }
+
+   Serial.print("Direction = ");                               //目的地Aの方角(°）
+  Serial.print(Angle());
+  Serial.print("deg:Distance = ");                             //目的地A迄の距離(m)
+  Serial.print(Distance());
+  Serial.println("m");
   delay(2000);
 }
 
@@ -482,6 +508,3 @@ volatile float altitude(){
   //return altitude = ((pow(referencePressure / getPressure(), 1 / 5.257) - 1)*(getTemperature() + 273.15)) / 0.0065;
     return ((pow(referencePressure / getPressure(), 1 / 5.257) - 1)*(getTemperature() + 273.15)) / 0.0065; 
 }
-
-
-
