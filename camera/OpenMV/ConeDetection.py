@@ -5,7 +5,7 @@ from pyb import UART
 
 uart = UART(3, 115200, timeout_char=10)                         # init with given baudrate
 
-red_led = pyb.LED(1)
+blue_led = pyb.LED(3)
 green_led = pyb.LED(2)
 
 sensor.reset()                         # Reset and initialize the sensor.
@@ -60,7 +60,7 @@ def send(data):
             uart.writechar(num)
         except:
             pass
-
+    #print(sendData)
 
 while(True):
     clock.tick()
@@ -77,26 +77,25 @@ while(True):
         if (i == 0): continue # background class
         if (len(detection_list) == 0): continue # no detections for this class?
 
-        print("********** %s **********" % labels[i])
+        #print("********** %s **********" % labels[i])
         for d in detection_list:
             count += 1
             [x, y, w, h] = d.rect()
             center_x = math.floor(x + (w / 2))
             center_y = math.floor(y + (h / 2))
-            print('x %d\ty %d' % (center_x, center_y))
-            img.draw_circle((center_x, center_y, 12), color=colors[i], thickness=1)
+            #print('x %d\ty %d' % (center_x, center_y))
+            #img.draw_circle((center_x, center_y, 12), color=colors[i], thickness=1)
             ave_center_x += center_x
             ave_center_y += center_y
     if count != 0:
         ave_center_x = ave_center_x/count
         ave_center_y = ave_center_y/count
-        print('ave_x %d\tave_y %d' % (ave_center_x, ave_center_y))
-        img.draw_circle((int(ave_center_x), int(ave_center_y), 12), color=colors[i], thickness=3)
-        send([ave_center_x, ave_center_y])
-        red_led.off()
-        green_led.on()
-    else:
-        send([0])
-        red_led.on()
-        green_led.off()
-    print(clock.fps(), "fps", end="\n\n")
+        #print('ave_x %d\tave_y %d' % (ave_center_x, ave_center_y))
+        #img.draw_circle((int(ave_center_x), int(ave_center_y), 12), color=colors[i], thickness=3)
+        send([ave_center_x, ave_center_y]) # topleft = (0, 0); bottomright = (240, 240)
+        #blue_led.off()
+        #green_led.on()
+    #else:
+        #blue_led.on()
+        #green_led.off()
+    #print(clock.fps(), "fps", end="\n\n")
