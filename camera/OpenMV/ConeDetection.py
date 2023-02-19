@@ -1,9 +1,12 @@
 # Edge Impulse - OpenMV Object Detection Example
 
-import sensor, image, time, os, tf, math, uos, gc
+import sensor, image, time, os, tf, math, uos, gc, pyb
 from pyb import UART
 
 uart = UART(3, 115200, timeout_char=10)                         # init with given baudrate
+
+red_led = pyb.LED(1)
+green_led = pyb.LED(2)
 
 sensor.reset()                         # Reset and initialize the sensor.
 sensor.set_pixformat(sensor.RGB565)    # Set pixel format to RGB565 (or GRAYSCALE)
@@ -76,7 +79,7 @@ while(True):
 
         print("********** %s **********" % labels[i])
         for d in detection_list:
-            count +=1
+            count += 1
             [x, y, w, h] = d.rect()
             center_x = math.floor(x + (w / 2))
             center_y = math.floor(y + (h / 2))
@@ -90,6 +93,10 @@ while(True):
         print('ave_x %d\tave_y %d' % (ave_center_x, ave_center_y))
         img.draw_circle((int(ave_center_x), int(ave_center_y), 12), color=colors[i], thickness=3)
         send([ave_center_x, ave_center_y])
+        red_led.off()
+        green_led.on()
     else:
         send([0])
+        red_led.on()
+        green_led.off()
     print(clock.fps(), "fps", end="\n\n")
