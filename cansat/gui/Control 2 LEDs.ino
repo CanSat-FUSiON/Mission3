@@ -5,13 +5,16 @@ const char* password = "byvf8jr5eierp";
 
 WiFiServer server(80);
 
-int ledPin = 2; // LEDのピン番号
-int duration = 0; // LEDが点灯する秒数
+int ledPin1 = 13; // LED1のピン番号
+int ledPin2 = 14; // LED2のピン番号
 
 void setup() {
   Serial.begin(115200);
-  pinMode(ledPin, OUTPUT);
-  
+  pinMode(ledPin1, OUTPUT);
+  pinMode(ledPin2, OUTPUT);
+  digitalWrite(ledPin1, LOW);
+  digitalWrite(ledPin2, LOW);
+
   // WiFiに接続
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -35,10 +38,18 @@ void loop() {
     Serial.println(request);
     client.flush();
 
-    // URLからdurationを取得
-    int pos = request.indexOf("duration=");
-    if (pos != -1) {
-      duration = request.substring(pos+9).toInt();
+    // LED1を点灯するボタンがクリックされた場合
+    if (request.indexOf("/fusion/control/right") != -1) {
+      digitalWrite(ledPin1, HIGH);
+      delay(5000);
+      digitalWrite(ledPin1, LOW);
+    }
+    
+    // LED2を点灯するボタンがクリックされた場合
+    if (request.indexOf("/fusion/control/left") != -1) {
+      digitalWrite(ledPin2, HIGH);
+      delay(5000);
+      digitalWrite(ledPin2, LOW);
     }
 
     // HTTPレスポンスを送信
@@ -50,18 +61,13 @@ void loop() {
     client.println("<html>");
     client.println("<body>");
     client.println("<h1>LED Control</h1>");
-    client.println("<form method=\"get\">");
-    client.println("<label>Duration (sec):</label><br/>");
-    client.println("<input type=\"text\" name=\"duration\" value=\"\"><br/><br/>");
-    client.println("<input type=\"submit\" value=\"Turn on LED\">");
+    client.println("<form method=\"get\" action=\"/led1on\">");
+    client.println("<input type=\"submit\" value=\"Turn on LED1 for 5 sec\"><br>");
+    client.println("</form>");
+    client.println("<form method=\"get\" action=\"/led2on\">");
+    client.println("<input type=\"submit\" value=\"Turn on LED2 for 5 sec\"><br>");
     client.println("</form>");
     client.println("</body>");
     client.println("</html>");
-
-    // LEDを点灯
-    digitalWrite(ledPin, HIGH);
-    delay(duration * 1000);
-    // LEDを消灯
-    digitalWrite(ledPin, LOW);
   }
 }
