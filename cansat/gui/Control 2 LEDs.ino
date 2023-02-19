@@ -51,23 +51,5 @@ void loop() {
       delay(5000);
       digitalWrite(ledPin2, LOW);
     }
-
-    // HTTPレスポンスを送信
-    client.println("HTTP/1.1 200 OK");
-    client.println("Content-Type: text/html");
-    client.println("Connection: close");
-    client.println();
-    client.println("<!DOCTYPE HTML>");
-    client.println("<html>");
-    client.println("<body>");
-    client.println("<h1>LED Control</h1>");
-    client.println("<form method=\"get\" action=\"/led1on\">");
-    client.println("<input type=\"submit\" value=\"Turn on LED1 for 5 sec\"><br>");
-    client.println("</form>");
-    client.println("<form method=\"get\" action=\"/led2on\">");
-    client.println("<input type=\"submit\" value=\"Turn on LED2 for 5 sec\"><br>");
-    client.println("</form>");
-    client.println("</body>");
-    client.println("</html>");
   }
 }
