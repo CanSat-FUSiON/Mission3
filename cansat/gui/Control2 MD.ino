@@ -19,6 +19,15 @@ WiFiServer server(80);
 #define FREQ 20000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
 #define BIT_NUM 12  // bit数（1bit〜16bit）
 
+#define LPS25H_ADDRESS  0x5c /* SA0 -> GND */
+#define LPS25H_WHO_AM_I     0x0f
+#define LPS25H_CTRL_REG1    0x20
+#define LPS25H_PRESS_OUT_XL 0x28
+#define LPS25H_PRESS_OUT_L  0x29
+#define LPS25H_PRESS_OUT_H  0x2a
+#define LPS25H_TEMP_OUT_L   0x2b
+#define LPS25H_TEMP_OUT_H   0x2c
+
 //int ledPin1 = 13; // LED1のピン番号
 //int ledPin2 = 14; // LED2のピン番号
 
@@ -29,6 +38,8 @@ void setup() {
   pinMode(dir1, OUTPUT);
   pinMode(pwm2, OUTPUT);
   pinMode(dir2, OUTPUT);
+
+  pinMode(12,OUTPUT);//baro
 
   // PWM初期設定
   ledcSetup(CH1, FREQ, BIT_NUM);   // PWM設定（ﾁｬﾝﾈﾙ, 周波数, bit数）
@@ -68,7 +79,7 @@ void loop() {
     Serial.println(request);
     client.flush();
 
-    // LED1を点灯するボタンがクリックされた場合
+    // rightボタンがクリックされた場合
     if (request.indexOf("/fusion/control/right") != -1) {
       /*
       digitalWrite(ledPin1, HIGH);
@@ -80,7 +91,7 @@ void loop() {
       delay(1000);
     }
     
-    // LED2を点灯するボタンがクリックされた場合
+    // leftボタンがクリックされた場合
     if (request.indexOf("/fusion/control/left") != -1) {
       /*
       digitalWrite(ledPin2, HIGH);
@@ -90,6 +101,30 @@ void loop() {
       ledcWrite(CH1, 2048); //右タイヤブレーキ
       ledcWrite(CH2, 0); //左タイヤ正回転
       delay(1000);
+    }
+
+    // forwardボタンがクリックされた場合
+    if (request.indexOf("/fusion/control/forward") != -1) {
+      ledcWrite(CH1, 0); 
+      ledcWrite(CH2, 0); 
+      delay(1000);
+    }
+
+    // backボタンがクリックされた場合
+    if (request.indexOf("/fusion/control/back") != -1) {
+      ledcWrite(CH1, 4096); 
+      ledcWrite(CH2, 4096); 
+      delay(1000);
+    }
+
+    // fireボタンがクリックされた場合
+    if (request.indexOf("/fusion/control/fire") != -1) {
+      Serial.println("HIGH");
+      digitalWrite(12,HIGH); 
+      delay(1000);
+
+      Serial.println("LOW");
+      digitalWrite(12,LOW);
     }
 
     // HTTPレスポンスを送信
