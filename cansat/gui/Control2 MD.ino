@@ -80,7 +80,7 @@ void loop() {
     client.flush();
 
     // rightボタンがクリックされた場合
-    if (request.indexOf("/fusion/control/right") != -1) {
+    if (request.indexOf("api/v1/control/right") != -1) {
       /*
       digitalWrite(ledPin1, HIGH);
       delay(5000);
@@ -92,7 +92,7 @@ void loop() {
     }
     
     // leftボタンがクリックされた場合
-    if (request.indexOf("/fusion/control/left") != -1) {
+    if (request.indexOf("api/v1/control/left") != -1) {
       /*
       digitalWrite(ledPin2, HIGH);
       delay(5000);
@@ -104,21 +104,21 @@ void loop() {
     }
 
     // forwardボタンがクリックされた場合
-    if (request.indexOf("/fusion/control/forward") != -1) {
+    if (request.indexOf("api/v1/control/forward") != -1) {
       ledcWrite(CH1, 0); 
       ledcWrite(CH2, 0); 
       delay(1000);
     }
 
     // backボタンがクリックされた場合
-    if (request.indexOf("/fusion/control/back") != -1) {
+    if (request.indexOf("api/v1/control/back") != -1) {
       ledcWrite(CH1, 4096); 
       ledcWrite(CH2, 4096); 
       delay(1000);
     }
 
     // fireボタンがクリックされた場合
-    if (request.indexOf("/fusion/control/fire") != -1) {
+    if (request.indexOf("api/vi/control/fire") != -1) {
       Serial.println("HIGH");
       digitalWrite(12,HIGH); 
       delay(1000);
