@@ -104,7 +104,7 @@ const int dir[MOTOR_COUNT] = {27, 25};
 // Encoder and motor global variables
 long currT, prevT = 0;
 int pos[PID_COUNT], power;
-float deltaT, target[PID_COUNT], rpm[MOTOR_COUNT], rpmFilt[MOTOR_COUNT],  e[PID_COUNT],
+float deltaT, target[PID_COUNT], rpm[MOTOR_COUNT], measurement[PID_COUNT],  e[PID_COUNT],
       eprev[PID_COUNT], dedt[PID_COUNT], eintegral[PID_COUNT], u[PID_COUNT];
 int prevPos[MOTOR_COUNT] = {0, 0};
 volatile int pos_i[MOTOR_COUNT] = {0, 0};
@@ -132,8 +132,8 @@ void readEncoder() {
 // Motors
 // i = 2:
 // Heading
-void PIDController(int i, int maxVal, int minVal) {
-  e[i] = target[i] - rpmFilt[i];
+float PIDController(int i, int maxVal, int minVal) {
+  e[i] = target[i] - measurement[i];
   dedt[i] = (e[i] - eprev[i]) / deltaT;
   eprev[i] = e[i];
   eintegral[i] = eintegral[i] + e[i] * deltaT;
@@ -148,17 +148,25 @@ void PIDController(int i, int maxVal, int minVal) {
   // Compute the input value of actuator
   u[i] = kp[i] * e[i] + ki[i] * eintegral[i] + kd[i] * dedt[i];
 
-  // Set the motor speed and direction
+  // Specific conditions
   if (i == 0 | i == 1) {
     if (abs(u[i]) <= 2048) {
-      power = u[i] + 2048;
+      return u[i] + 2048;
     } else if (u[i] > 2048) {
-      power = 4096;
+      return 4096;
     } else {
-      power = 0;
+      return 0;
     }
+  } else if (i == 2) {
+    if (u[i] > maxVal) {
+      u[i] = maxVal;
+    } else if  (u[i] < minVal) {
+      u[i] = minVal;
+    }
+    return u[i];
   }
 }
+
 
 void setup() {
   Serial.begin(115200);
@@ -210,19 +218,19 @@ void loop() {
   }
 
   // Filter the RPM using a 2nd order low pass filter
-  rpmFilt[0] = lp0.filt(rpm[0]);
-  rpmFilt[1] = lp1.filt(rpm[1]);
+  measurement[0] = lp0.filt(rpm[0]);
+  measurement[1] = lp1.filt(rpm[1]);
 
   // Evaluate the control signal and control the motors
   for (int i = 0; i < MOTOR_COUNT; i++) {
-    PIDController(i, 2048, -2048);
+    power = PIDController(i, 2048, -2048);
     ledcWrite(i, power);
   }
 
   // Print the motors' filtered RPM
   Serial.print("Variable_1:");
-  Serial.print(rpmFilt[0]);
+  Serial.print(measurement[0]);
   Serial.print(",");
   Serial.print("Variable_2:");
-  Serial.println(rpmFilt[1]);
+  Serial.println(measurement[1]);
 }
