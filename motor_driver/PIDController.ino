@@ -103,8 +103,8 @@ const int dir[MOTOR_COUNT] = {27, 25};
 
 // Encoder and motor global variables
 long currT, prevT = 0;
-int pos[PID_COUNT], power;
-float deltaT, target[PID_COUNT], rpm[MOTOR_COUNT], measurement[PID_COUNT],  e[PID_COUNT],
+int pos[PID_COUNT];
+float deltaT, power, target[PID_COUNT], rpm[MOTOR_COUNT], measurement[PID_COUNT],  e[PID_COUNT],
       eprev[PID_COUNT], dedt[PID_COUNT], eintegral[PID_COUNT], u[PID_COUNT];
 int prevPos[MOTOR_COUNT] = {0, 0};
 volatile int pos_i[MOTOR_COUNT] = {0, 0};
