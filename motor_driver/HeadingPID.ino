@@ -1,3 +1,4 @@
+// BNO055
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
@@ -102,24 +103,25 @@ LowPass<2> lp1(3, 1e3, true);
 #define FREQ 20000
 #define BIT_NUM 12
 #define PPR 244.8
-#define N_MOTORS 2
+#define PID_COUNT 3
+#define MOTOR_COUNT 2
 
 // Encoder and motor settings
-const int encA[] = {35, 39};
-const int encB[] = {34, 36};
-const int pwm[] = {14, 26};
-const int dir[] = {27, 25};
+const int encA[MOTOR_COUNT] = {35, 39};
+const int encB[MOTOR_COUNT] = {34, 36};
+const int pwm[MOTOR_COUNT] = {14, 26};
+const int dir[MOTOR_COUNT] = {27, 25};
 
 // Encoder and motor global variables
 long currT, prevT = 0;
-int pos[N_MOTORS], power;
-float deltaT, target[N_MOTORS], rpm[N_MOTORS], rpmFilt[N_MOTORS],  e[N_MOTORS],
-      eprev[N_MOTORS], dedt[N_MOTORS], eintegral[N_MOTORS], u[N_MOTORS];
-int prevPos[] = {0, 0};
-volatile int pos_i[] = {0, 0};
-float kp[] = {40, 40};
-float ki[] = {30, 30};
-float kd[] = {1.5, 1.5};
+int pos[PID_COUNT], power;
+float deltaT, target[PID_COUNT], rpm[MOTOR_COUNT], rpmFilt[MOTOR_COUNT],  e[PID_COUNT],
+      eprev[PID_COUNT], dedt[PID_COUNT], eintegral[PID_COUNT], u[PID_COUNT];
+int prevPos[MOTOR_COUNT] = {0, 0};
+volatile int pos_i[MOTOR_COUNT] = {0, 0};
+float kp[PID_COUNT] = {40, 40, 1};
+float ki[PID_COUNT] = {30, 30, 1};
+float kd[PID_COUNT] = {1.5, 1.5, 0};
 
 // Interrupt service routine (ISR)
 template <int i>
@@ -137,54 +139,43 @@ void readEncoder() {
 }
 
 // PID Controller
-void PIDController_Motor(int i) {
+// i= 0, 1:
+// Motors
+// i = 2:
+// Heading
+float PIDController(int i, int maxVal, int minVal) {
   e[i] = target[i] - rpmFilt[i];
   dedt[i] = (e[i] - eprev[i]) / deltaT;
   eprev[i] = e[i];
   eintegral[i] = eintegral[i] + e[i] * deltaT;
 
   // Integrator anti-windup
-  if (ki[i] * eintegral[i] > 2048) {
-    eintegral[i] = 2048 / ki[i];
-  } else if (ki[i] * eintegral[i] < -2048) {
-    eintegral[i] = -2048 / ki[i];
+  if (ki[i] * eintegral[i] > maxVal) {
+    eintegral[i] = maxVal / ki[i];
+  } else if (ki[i] * eintegral[i] < -minVal) {
+    eintegral[i] = -minVal / ki[i];
   }
 
   // Compute the input value of actuator
   u[i] = kp[i] * e[i] + ki[i] * eintegral[i] + kd[i] * dedt[i];
 
-  // Set the motor speed and direction
-  if (abs(u[i]) <= 2048) {
-    power = u[i] + 2048;
-  } else if (u[i] > 2048) {
-    power = 4096;
-  } else {
-    power = 0;
+  // Specific conditions
+  if (i == 0 | i == 1) {
+    if (abs(u[i]) <= 2048) {
+      return u[i] + 2048;
+    } else if (u[i] > 2048) {
+      return 4096;
+    } else {
+      return 0;
+    }
+  } else if (i == 2) {
+    if (u[i] > maxVal) {
+      u[i] = maxVal;
+    } else if  (u[i] < minVal) {
+      u[i] = minVal;
+    }
+    return u[i];
   }
-}
-
-
-float eprev2 = 0;
-float eintegral2 = 0;
-
-float PIDController(float reference, float measurement, float kp, float ki, float kd) {
-  float e2 = reference - measurement;
-  float dedt2 = (e2 - eprev2) / deltaT;
-  eprev2 = e2;
-  eintegral2 = eintegral2 + e2 * deltaT;
-
-  // Integrator anti-windup
-  //  if (ki * eintegral2 > maxVal) {
-  //    eintegral2 = maxVal / ki;
-  //  } else if (ki * eintegral2 < minVal) {
-  //    eintegral2 = minVal / ki;
-  //  }
-
-  // Compute the input value of actuator
-  float u2 = kp * e2 + ki * eintegral2 + kd * dedt2;
-
-  // output the input value
-  return u2;
 }
 
 void setup() {
@@ -205,7 +196,7 @@ void setup() {
   bno.setExtCrystalUse(true);
 
   // Set up the encoder and motor pins
-  for (int i = 0; i < N_MOTORS; i++) {
+  for (int i = 0; i < MOTOR_COUNT; i++) {
     pinMode(encA[i], INPUT);
     pinMode(encB[i], INPUT);
     pinMode(pwm[i], OUTPUT);
@@ -227,33 +218,31 @@ void loop() {
   deltaT = ((float) (currT - prevT)) / 1.0e6;
   prevT = currT;
 
-
   // XYZ回転方向におけるオイラー角を取得
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   //現時点のx軸回転角度
   float heading = euler.x();
-  float headingTarget = 0;
-  float headingRPM = PIDController(headingTarget, heading, 1, 1, 0);
-  
+  target[2] = 0; //heading target value
+
   // Set the target RPM values
   // Target値の設定について：Target値の変化が急だと、応答が振動する可能性があるため、一次ローパスフィルター（一次遅れ系）を入れた方がいい
-  target[0] = headingRPM;
-  target[1] = headingRPM;
+  target[0] = PIDController(2, 300, -300);
+  target[1] = PIDController(2, 300, -300);
 
   // Initialize the position variable
-  for (int i = 0; i < N_MOTORS; i++) {
+  for (int i = 0; i < MOTOR_COUNT; i++) {
     pos[i] = 0;
   }
 
   // Read the encoders
   noInterrupts(); // Disable interrupts temporarily while reading to avoid misreading
-  for (int i = 0; i < N_MOTORS; i++) {
+  for (int i = 0; i < MOTOR_COUNT; i++) {
     pos[i] = pos_i[i];
   }
   interrupts();
 
   // Compute the RPM
-  for (int i = 0; i < N_MOTORS; i++) {
+  for (int i = 0; i < MOTOR_COUNT; i++) {
     rpm[i] = ((pos[i] - prevPos[i]) / deltaT) / PPR * 60.0;
     prevPos[i] = pos[i];
   }
@@ -263,8 +252,8 @@ void loop() {
   rpmFilt[1] = lp1.filt(rpm[1]);
 
   // Evaluate the control signal and control the motors
-  for (int i = 0; i < N_MOTORS; i++) {
-    PIDController_Motor(i);
+  for (int i = 0; i < MOTOR_COUNT; i++) {
+    power = PIDController(i, 2048, -2048);
     ledcWrite(i, power);
   }
 
