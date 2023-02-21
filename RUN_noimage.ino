@@ -281,6 +281,10 @@ if(float(altitude()) > float(gnd_T) + 10){
       Serial.println("LOW");
       digitalWrite(12,LOW);
       while(1){
+        GPSRUN();//voidGPSRUNの呼び出し　うまくいってんのかな？
+
+        ultla();//void ultlaの呼び出し
+  
     }
    }else{
     Serial.println("over 1meter");
@@ -293,9 +297,9 @@ if(float(altitude()) > float(gnd_T) + 10){
   delay(500);
 }
 
-GPSRUN();//voidGPSRUNの呼び出し　うまくいってんのかな？
+//GPSRUN();//voidGPSRUNの呼び出し　うまくいってんのかな？
 
-ultla();//void ultlaの呼び出し
+//ultla();//void ultlaの呼び出し
   
 }
 
