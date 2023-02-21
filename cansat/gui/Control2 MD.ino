@@ -63,6 +63,7 @@ void setup() {
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
+  Serial.print(WiFi.localIP());
 
   // サーバーを開始
   server.begin();
