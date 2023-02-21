@@ -115,7 +115,7 @@ const int dir[MOTOR_COUNT] = {27, 25};
 // Encoder and motor global variables
 long currT, prevT = 0;
 int pos[PID_COUNT], power;
-float deltaT, target[PID_COUNT], rpm[MOTOR_COUNT], rpmFilt[MOTOR_COUNT],  e[PID_COUNT],
+float deltaT, target[PID_COUNT], rpm[MOTOR_COUNT], measurement[PID_COUNT],  e[PID_COUNT],
       eprev[PID_COUNT], dedt[PID_COUNT], eintegral[PID_COUNT], u[PID_COUNT];
 int prevPos[MOTOR_COUNT] = {0, 0};
 volatile int pos_i[MOTOR_COUNT] = {0, 0};
@@ -144,7 +144,7 @@ void readEncoder() {
 // i = 2:
 // Heading
 float PIDController(int i, int maxVal, int minVal) {
-  e[i] = target[i] - rpmFilt[i];
+  e[i] = target[i] - measurement[i];
   dedt[i] = (e[i] - eprev[i]) / deltaT;
   eprev[i] = e[i];
   eintegral[i] = eintegral[i] + e[i] * deltaT;
@@ -220,8 +220,7 @@ void loop() {
 
   // XYZ回転方向におけるオイラー角を取得
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  //現時点のx軸回転角度
-  float heading = euler.x();
+  measurement[2] = euler.x(); //現時点のx軸回転角度
   target[2] = 0; //heading target value
 
   // Set the target RPM values
@@ -248,8 +247,8 @@ void loop() {
   }
 
   // Filter the RPM using a 2nd order low pass filter
-  rpmFilt[0] = lp0.filt(rpm[0]);
-  rpmFilt[1] = lp1.filt(rpm[1]);
+  measurement[0] = lp0.filt(rpm[0]);
+  measurement[1] = lp1.filt(rpm[1]);
 
   // Evaluate the control signal and control the motors
   for (int i = 0; i < MOTOR_COUNT; i++) {
@@ -259,8 +258,8 @@ void loop() {
 
   // Print the motors' filtered RPM
   Serial.print("Variable_1:");
-  Serial.print(rpmFilt[0]);
+  Serial.print(measurement[0]);
   Serial.print(",");
   Serial.print("Variable_2:");
-  Serial.println(rpmFilt[1]);
+  Serial.println(measurement[1]);
 }
