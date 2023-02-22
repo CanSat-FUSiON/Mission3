@@ -145,6 +145,11 @@ void readEncoder() {
 // Heading
 float PIDController(int i, int maxVal, int minVal) {
   e[i] = target[i] - measurement[i];
+  if (i == 2 && e[i] < - 180) {
+    e[i] += 360;
+  else if(i == 2 && e[i] > 360)
+    e[i] -= 360;
+  }
   dedt[i] = (e[i] - eprev[i]) / deltaT;
   eprev[i] = e[i];
   eintegral[i] = eintegral[i] + e[i] * deltaT;
