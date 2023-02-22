@@ -222,8 +222,12 @@ void loop() {
     }
     power = PIDController(i, 2048, -2048); // Evaluate the control signal and control the motors
     ledcWrite(i, power); // Input signal to motor plant
-    Serial.print("Variable_1:"); // Print the motors' filtered RPM
-    Serial.print(measurement[i]);
-    Serial.print(",");
   }
+  
+  // Print the motors' filtered RPM
+  Serial.print("Variable_1:");
+  Serial.print(rpmFilt[0]);
+  Serial.print(",");
+  Serial.print("Variable_2:");
+  Serial.println(rpmFilt[1]);
 }
