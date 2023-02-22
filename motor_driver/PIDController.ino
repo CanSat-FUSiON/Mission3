@@ -188,6 +188,11 @@ void setup() {
 }
 
 void loop() {
+  
+  // Compute the time difference
+  currT = micros();
+  deltaT = ((float) (currT - prevT)) / 1.0e6;
+  prevT = currT;
 
   // Set the target RPM values
   // Target値の設定について：Target値の変化が急だと、応答が振動する可能性があるため、一次ローパスフィルター（一次遅れ系）を入れた方がいい
@@ -206,16 +211,15 @@ void loop() {
   }
   interrupts();
 
-  // Compute the time difference
-  currT = micros();
-  deltaT = ((float) (currT - prevT)) / 1.0e6;
-  prevT = currT;
-
   // Control the motors
   for (int i = 0; i < MOTOR_COUNT; i++) {
     rpm[i] = ((pos[i] - prevPos[i]) / deltaT) / PPR * 60.0;
     prevPos[i] = pos[i];
-    measurement[i] = lp0.filt(rpm[i]); // Filter the RPM using a 2nd order low pass filter
+    if (i == 0) { // Filter the RPM using a 2nd order low pass filter
+      rpmFilt[i] = lp0.filt(rpm[i]);
+    } else {
+      rpmFilt[i] = lp1.filt(rpm[i]);
+    }
     power = PIDController(i, 2048, -2048); // Evaluate the control signal and control the motors
     ledcWrite(i, power); // Input signal to motor plant
     Serial.print("Variable_1:"); // Print the motors' filtered RPM
