@@ -247,26 +247,15 @@ void loop() {
   }
   interrupts();
 
-  // Compute the RPM
+  // Control the motors
   for (int i = 0; i < MOTOR_COUNT; i++) {
     rpm[i] = ((pos[i] - prevPos[i]) / deltaT) / PPR * 60.0;
     prevPos[i] = pos[i];
+    measurement[i] = lp0.filt(rpm[i]); // Filter the RPM using a 2nd order low pass filter
+    power = PIDController(i, 2048, -2048); // Evaluate the control signal and control the motors
+    ledcWrite(i, power); // Input signal to motor plant
+    Serial.print("Variable_1:"); // Print the motors' filtered RPM
+    Serial.print(measurement[i]);
+    Serial.print(",");
   }
-
-  // Filter the RPM using a 2nd order low pass filter
-  measurement[0] = lp0.filt(rpm[0]);
-  measurement[1] = lp1.filt(rpm[1]);
-
-  // Evaluate the control signal and control the motors
-  for (int i = 0; i < MOTOR_COUNT; i++) {
-    power = PIDController(i, 2048, -2048);
-    ledcWrite(i, power);
-  }
-
-  // Print the motors' filtered RPM
-  Serial.print("Variable_1:");
-  Serial.print(measurement[0]);
-  Serial.print(",");
-  Serial.print("Variable_2:");
-  Serial.println(measurement[1]);
 }
