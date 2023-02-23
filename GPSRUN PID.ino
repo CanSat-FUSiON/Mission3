@@ -193,11 +193,11 @@ float PIDController(int i, int maxVal, int minVal) {
   // Specific conditions
   if (i == 0 || i == 1) {
     if (abs(u[i]) <= 2048) {
-      return u[i] + 2048;
+      u[i] += 2048;
     } else if (u[i] > 2048) {
-      return 4096;
+      u[i] = 4096;
     } else {
-      return 0;
+      u[i] = 0;
     }
   } else if (i == 2) {
     if (u[i] > maxVal) {
@@ -205,7 +205,6 @@ float PIDController(int i, int maxVal, int minVal) {
     } else if  (u[i] < minVal) {
       u[i] = minVal;
     }
-    //return u[i];
   }
   return u[i];
 }
@@ -270,7 +269,7 @@ void setup() {
     while (1);
   }
 
-  bno.setExtCrystalUse(true);
+  //bno.setExtCrystalUse(true);
 
   // Set up the encoder and motor pins
   for (int i = 0; i < MOTOR_COUNT; i++) {
@@ -307,17 +306,18 @@ void setup() {
   Serial.begin(115200);
   Serial1.begin(9600, SERIAL_8N1, RX_PIN, TX_PIN);
 
-  while (!Serial) delay(10);  // wait for serial port to open!
 
-  Serial.println("Orientation Sensor Test"); Serial.println("");
+  //while (!Serial) delay(10);  // wait for serial port to open!
+
+  //Serial.println("Orientation Sensor Test"); Serial.println("");
 
   /* Initialise the sensor */
-  if (!bno.begin())
-  {
+  //if (!bno.begin())
+  //{
     /* There was a problem detecting the BNO055 ... check your connections */
-    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-    while (1);
-  }
+    //Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    //while (1);
+  //}
 
 
 }
