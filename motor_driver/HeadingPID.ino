@@ -149,7 +149,7 @@ float PIDController(int i, int maxVal, int minVal) {
   
   if (i == 2 && e[i] < - 180) {
     e[i] += 360;
-  else if(i == 2 && e[i] > 360)
+  } else if(i == 2 && e[i] > 360) {
     e[i] -= 360;
   }
   
@@ -262,8 +262,8 @@ void loop() {
   
   // Print the motors' filtered RPM
   Serial.print("Variable_1:");
-  Serial.print(rpmFilt[0]);
+  Serial.print(measurement[0]);
   Serial.print(",");
   Serial.print("Variable_2:");
-  Serial.println(rpmFilt[1]);
+  Serial.println(measurement[1]);
 }
