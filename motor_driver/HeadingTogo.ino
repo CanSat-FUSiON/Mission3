@@ -168,13 +168,13 @@ float PIDController(int i, int maxVal, int minVal) {
   u[i] = kp[i] * e[i] + ki[i] * eintegral[i] + kd[i] * dedt[i];
 
   // Specific conditions
-  if (i == 0 | i == 1) {
+  if (i == 0 || i == 1) {
     if (abs(u[i]) <= 2048) {
-      return u[i] + 2048;
+      u[i] + 2048;
     } else if (u[i] > 2048) {
-      return 4096;
+      u[i] = 4096;
     } else {
-      return 0;
+      u[i] = 0;
     }
   } else if (i == 2) {
     if (u[i] > maxVal) {
@@ -182,8 +182,8 @@ float PIDController(int i, int maxVal, int minVal) {
     } else if  (u[i] < minVal) {
       u[i] = minVal;
     }
-    return u[i];
   }
+  return u[i];
 }
 
 void setup() {
