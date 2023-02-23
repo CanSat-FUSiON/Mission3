@@ -17,6 +17,7 @@ sensor.skip_frames(time=2000)          # Let the camera adjust.
 net = None
 labels = None
 min_confidence = 0.5
+HFOV = math.radians(70.8)
 
 try:
     # load the model, alloc the model file on the heap if we have at least 64K free after loading
@@ -82,17 +83,18 @@ while(True):
             count += 1
             [x, y, w, h] = d.rect()
             center_x = math.floor(x + (w / 2))
-            center_y = math.floor(y + (h / 2))
+            #center_y = math.floor(y + (h / 2))
             #print('x %d\ty %d' % (center_x, center_y))
             #img.draw_circle((center_x, center_y, 12), color=colors[i], thickness=1)
             ave_center_x += center_x
-            ave_center_y += center_y
+            #ave_center_y += center_y
     if count != 0:
-        ave_center_x = ave_center_x/count
-        ave_center_y = ave_center_y/count
+        ave_center_x = ave_center_x/count # topleft = (0, 0); bottomright = (240, 240)
+        #ave_center_y = ave_center_y/count
+        heading = math.atan((120-ave_center_x)/120 * math.tan(HFOV/2))
         #print('ave_x %d\tave_y %d' % (ave_center_x, ave_center_y))
         #img.draw_circle((int(ave_center_x), int(ave_center_y), 12), color=colors[i], thickness=3)
-        send([ave_center_x, ave_center_y]) # topleft = (0, 0); bottomright = (240, 240)
+        send([int(math.degrees(heading))])
         #blue_led.off()
         #green_led.on()
     #else:
