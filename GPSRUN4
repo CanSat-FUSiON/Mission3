@@ -51,9 +51,7 @@ float Distance(){
   return (TinyGPSPlus::distanceBetween(gps_lat, gps_longt, LatA, LongA ) / 1000.0);
 }
 
-//float Distance() {
-  //return (equator) * acos(sin(gps_lat) * sin(LatA) + cos(gps_lat) * cos(LatA) * cos((LongA) - (gps_longt)));
-//}
+
 
 /////////////////////////////////////////////
 
@@ -98,8 +96,6 @@ void setup() {
     while (1);
   }
 
-  // Set the BNO055 to read magnetometer data only
-  //bno.setMode(im::OPERATION_MODE_MAGONLY);
 
 }
 
@@ -165,33 +161,6 @@ void printEvent(sensors_event_t* event) {
       }
     }
 
-    /*
-        if (i <= THRESHOLD && (360 - THRESHOLD) <= i ) { //直進
-          ledcWrite(CH1, 0); //直進
-          ledcWrite(CH2, 0);
-          delay(1000);
-          if (Distance() < 1) {
-            while (1) { //GPSRUN停止。画像処理フェーズへ
-            }
-          } else {
-            ledcWrite(CH1, 0); //直進
-            ledcWrite(CH2, 0);
-            delay(2000);
-          }
-        } else if (THRESHOLD < i) { //右に旋回
-          if (i <= 180) {
-            ledcWrite(CH1, 0); //右タイヤ正回転
-            ledcWrite(CH2, 2048); //左タイヤブレーキ
-            delay(1000);
-          }
-        } else if (180 < i) { //左に旋回
-          if (i < (360 - THRESHOLD)) {
-            ledcWrite(CH1, 2048); //右タイヤブレーキ
-            ledcWrite(CH2, 0); //左タイヤ正回転
-            delay(1000);
-          }
-        }
-    */
     Serial.print("i=");
     Serial.print(i);
     Serial.print("heading=");
@@ -293,57 +262,6 @@ void loop() {
   Serial.println("--");
   delay(BNO055_SAMPLERATE_DELAY_MS);
 
-
-  // Get the current magnetometer reading.
-  //imu::Vector<3> mag = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
-
-  // Calculate the heading in degrees
-
-  /*
-    float i = heading() -Angle();
-
-    if(i<0){
-    i=i+360;
-    }
-
-    if(i <= THRESHOLD && (360-THRESHOLD) <= i ){  //直進
-    ledcWrite(CH1, 0); //直進
-    ledcWrite(CH2, 0);
-    delay(1000);
-    if(Distance()<1){
-    while(1){//GPSRUN停止。画像処理フェーズへ
-    }
-    }else{
-    ledcWrite(CH1, 0); //直進
-    ledcWrite(CH2, 0);
-    delay(2000);
-    }
-    }else if(THRESHOLD<i){  //右に旋回
-    if(i<=180){
-    ledcWrite(CH1, 0); //右タイヤ正回転
-    ledcWrite(CH2, 2048); //左タイヤブレーキ
-    delay(1000);
-    }
-    }else if(180<i){  //左に旋回
-    if(i<(360-THRESHOLD)){
-    ledcWrite(CH1, 2048); //右タイヤブレーキ
-    ledcWrite(CH2, 0); //左タイヤ正回転
-    delay(1000);
-    }
-    }
-  */
-
-  /*
-    ledcWrite(CH1, 0); //フル正回転
-    ledcWrite(CH1, 4096); //フル逆回転
-    delay(5000);
-    ledcWrite(CH1, 2048); //active ブレーキ
-    delay(5000);
-    for (int i = 0; i <= 4096; i++) {
-    ledcWrite(CH1, i); //フル正回転 --> active ブレーキ --> フル逆回転
-    delay(10);
-    }
-    delay(5000);
-  */
+ 
 
 }
