@@ -2,7 +2,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
-#include <MsTimer2.h>
+//#include <MsTimer2.h>
 
 // PWM出力端子設定
 #define pwm1 14
@@ -61,8 +61,6 @@ void setup(void)
     while (1);
   }
 
-  MsTimer2::set(1000, time_count);
-
   delay(1000);
 }
 
@@ -105,26 +103,30 @@ void loop(void)
   Serial.println("--");
   delay(BNO055_SAMPLERATE_DELAY_MS);
 
-  if (accel < 0.5) {
-    MsTimer2::start();
-    if (accel < 0.5 && time_count == 2000) {
-      Serial.println("stack!!!!!");
-      ledcWrite(CH1, 4096); //後退→右に旋回→直進
-      ledcWrite(CH2, 4096);
-      delay(100);
-      ledcWrite(CH1, 0);
-      ledcWrite(CH2, 2048);
-      delay(100);
-      ledcWrite(CH1, 0);
-      ledcWrite(CH2, 0);
-      delay(100);
-    }
-
-  }
-
-
   /*
     if (accel < STACK_THRESHOLD) {
+      delay(2000); 　 //けっきょくこれGPSRUNフェーズに入ってからだから旋回するときとか以外止まらないはず
+      if (accel < STACK_THRESHOLD - 0.1) {
+        ledcWrite(CH1, 4096); //後退→右に旋回→直進
+        ledcWrite(CH2, 4096);
+        delay(100);
+        ledcWrite(CH1, 0);
+        ledcWrite(CH2, 2048);
+        delay(100);
+        ledcWrite(CH1, 0);
+        ledcWrite(CH2, 0);
+        delay(100);
+      }else{
+        delay(100);
+      }
+    }
+  */
+
+
+
+  if (accel < STACK_THRESHOLD) {
+    delay(2000); //けっきょくこれGPSRUNフェーズに入ってからだから旋回するときとか以外止まらないはず
+    if (accel < STACK_THRESHOLD - 0.1) {
       Serial.println("Robot is stacked!");
       ledcWrite(CH1, 4096); //後退→右に旋回→直進
       ledcWrite(CH2, 4096);
@@ -136,10 +138,9 @@ void loop(void)
       ledcWrite(CH2, 0);
       delay(100);
     }
+  }
+}
 
-    delay(1000);
-    }
-  */
 
   void printEvent(sensors_event_t* event) {
     double x = -1000000, y = -1000000 , z = -1000000; //dumb values, easy to spot problem
