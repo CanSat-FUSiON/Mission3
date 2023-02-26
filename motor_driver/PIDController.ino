@@ -226,8 +226,8 @@ void loop() {
   
   // Print the motors' filtered RPM
   Serial.print("Variable_1:");
-  Serial.print(rpmFilt[0]);
+  Serial.print(measurement[0]);
   Serial.print(",");
   Serial.print("Variable_2:");
-  Serial.println(rpmFilt[1]);
+  Serial.println(measurement[1]);
 }
