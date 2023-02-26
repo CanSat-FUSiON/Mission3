@@ -2,6 +2,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
+#include <MsTimer2.h>
 
 // PWM出力端子設定
 #define pwm1 14
@@ -45,7 +46,7 @@ void setup(void)
 
   digitalWrite(pwm1, HIGH);
   digitalWrite(pwm2, HIGH);
-  
+
   Serial.begin(115200);
 
   while (!Serial) delay(10);  // wait for serial port to open!
@@ -60,11 +61,14 @@ void setup(void)
     while (1);
   }
 
+  MsTimer2::set(1000, time_count);
+
   delay(1000);
 }
 
 void loop(void)
 {
+
   //could add VECTOR_ACCELEROMETER, VECTOR_MAGNETOMETER,VECTOR_GRAVITY...
   sensors_event_t orientationData , angVelocityData , linearAccelData, magnetometerData, accelerometerData, gravityData;
   bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
@@ -101,74 +105,94 @@ void loop(void)
   Serial.println("--");
   delay(BNO055_SAMPLERATE_DELAY_MS);
 
-  if (accel < STACK_THRESHOLD) {
-    Serial.println("Robot is stacked!");
-    ledcWrite(CH1, 4096); //後退→右に旋回→直進
-    ledcWrite(CH2, 4096); 
-    delay(100);
-    ledcWrite(CH1, 0); 
-    ledcWrite(CH2, 2048); 
-    delay(100);
-    ledcWrite(CH1, 0); 
-    ledcWrite(CH2, 0); 
-    delay(100);
+  if (accel < 0.5) {
+    MsTimer2::start();
+    if (accel < 0.5 && time_count == 2000) {
+      Serial.println("stack!!!!!");
+      ledcWrite(CH1, 4096); //後退→右に旋回→直進
+      ledcWrite(CH2, 4096);
+      delay(100);
+      ledcWrite(CH1, 0);
+      ledcWrite(CH2, 2048);
+      delay(100);
+      ledcWrite(CH1, 0);
+      ledcWrite(CH2, 0);
+      delay(100);
+    }
+
   }
 
-  delay(1000);
-}
 
-void printEvent(sensors_event_t* event) {
-  double x = -1000000, y = -1000000 , z = -1000000; //dumb values, easy to spot problem
-  if (event->type == SENSOR_TYPE_ACCELEROMETER) {
-    Serial.print("Accl:");
-    x = event->acceleration.x;
-    y = event->acceleration.y;
-    z = event->acceleration.z;
-  }
-  else if (event->type == SENSOR_TYPE_ORIENTATION) {
-    Serial.print("Orient:");
-    x = event->orientation.x;
-    y = event->orientation.y;
-    z = event->orientation.z;
-  }
-  else if (event->type == SENSOR_TYPE_MAGNETIC_FIELD) {
-    Serial.print("Mag:");
-    x = event->magnetic.x;
-    y = event->magnetic.y;
-    z = event->magnetic.z;
-  }
-  else if (event->type == SENSOR_TYPE_GYROSCOPE) {
-    Serial.print("Gyro:");
-    x = event->gyro.x;
-    y = event->gyro.y;
-    z = event->gyro.z;
-  }
-  else if (event->type == SENSOR_TYPE_ROTATION_VECTOR) {
-    Serial.print("Rot:");
-    x = event->gyro.x;
-    y = event->gyro.y;
-    z = event->gyro.z;
-  }
-  else if (event->type == SENSOR_TYPE_LINEAR_ACCELERATION) {
-    Serial.print("Linear:");
-    x = event->acceleration.x;
-    y = event->acceleration.y;
-    z = event->acceleration.z;
-  }
-  else if (event->type == SENSOR_TYPE_GRAVITY) {
-    Serial.print("Gravity:");
-    x = event->acceleration.x;
-    y = event->acceleration.y;
-    z = event->acceleration.z;
-  }
-  else {
-    Serial.print("Unk:");
-  }
+  /*
+    if (accel < STACK_THRESHOLD) {
+      Serial.println("Robot is stacked!");
+      ledcWrite(CH1, 4096); //後退→右に旋回→直進
+      ledcWrite(CH2, 4096);
+      delay(100);
+      ledcWrite(CH1, 0);
+      ledcWrite(CH2, 2048);
+      delay(100);
+      ledcWrite(CH1, 0);
+      ledcWrite(CH2, 0);
+      delay(100);
+    }
 
-  Serial.print("\tx= ");
-  Serial.print(x);
-  Serial.print(" |\ty= ");
-  Serial.print(y);
-  Serial.print(" |\tz= ");
-  Serial.println(z);
-}
+    delay(1000);
+    }
+  */
+
+  void printEvent(sensors_event_t* event) {
+    double x = -1000000, y = -1000000 , z = -1000000; //dumb values, easy to spot problem
+    if (event->type == SENSOR_TYPE_ACCELEROMETER) {
+      Serial.print("Accl:");
+      x = event->acceleration.x;
+      y = event->acceleration.y;
+      z = event->acceleration.z;
+    }
+    else if (event->type == SENSOR_TYPE_ORIENTATION) {
+      Serial.print("Orient:");
+      x = event->orientation.x;
+      y = event->orientation.y;
+      z = event->orientation.z;
+    }
+    else if (event->type == SENSOR_TYPE_MAGNETIC_FIELD) {
+      Serial.print("Mag:");
+      x = event->magnetic.x;
+      y = event->magnetic.y;
+      z = event->magnetic.z;
+    }
+    else if (event->type == SENSOR_TYPE_GYROSCOPE) {
+      Serial.print("Gyro:");
+      x = event->gyro.x;
+      y = event->gyro.y;
+      z = event->gyro.z;
+    }
+    else if (event->type == SENSOR_TYPE_ROTATION_VECTOR) {
+      Serial.print("Rot:");
+      x = event->gyro.x;
+      y = event->gyro.y;
+      z = event->gyro.z;
+    }
+    else if (event->type == SENSOR_TYPE_LINEAR_ACCELERATION) {
+      Serial.print("Linear:");
+      x = event->acceleration.x;
+      y = event->acceleration.y;
+      z = event->acceleration.z;
+    }
+    else if (event->type == SENSOR_TYPE_GRAVITY) {
+      Serial.print("Gravity:");
+      x = event->acceleration.x;
+      y = event->acceleration.y;
+      z = event->acceleration.z;
+    }
+    else {
+      Serial.print("Unk:");
+    }
+
+    Serial.print("\tx= ");
+    Serial.print(x);
+    Serial.print(" |\ty= ");
+    Serial.print(y);
+    Serial.print(" |\tz= ");
+    Serial.println(z);
+  }
