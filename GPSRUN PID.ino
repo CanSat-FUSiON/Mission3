@@ -280,11 +280,13 @@ void setup() {
     pinMode(dir[i], OUTPUT);
     ledcSetup(i, FREQ, BIT_NUM);
     ledcAttachPin(dir[i], i);
+    Serial.println("1");
   }
 
   // Attach the interrupt pins to encoders
   attachInterrupt(digitalPinToInterrupt(encA[0]), readEncoder<0>, RISING);
   attachInterrupt(digitalPinToInterrupt(encA[1]), readEncoder<1>, RISING);
+  Serial.println("2");
 
 
   //------------------------gpsrun-----------------
@@ -332,15 +334,18 @@ void loop() {
   currT = micros();
   deltaT = ((float) (currT - prevT)) / 1.0e6;
   prevT = currT;
+  Serial.println("3");
 
   // 地磁気センサーから読み取れる東からロボット正面方向の角度をphiとする。東から目標方向の角度をthetaとする。
   // 目標方向を0度基準にして左回りに180度、右回りに-180度）
   imu::Vector<3> magnet = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
+  Serial.println("4");
 
   //float heading = atan2(y, x) * 180.0 / M_PI;
   int phi = magnet.x();
   //int phi = atan2(y, x) * 180.0 / M_PI;
   int theta = 90 - (atan2(sin((LongA) - (gps_longt)), (cos(gps_lat) * tan(LatA) - sin(gps_lat) * cos((LongA) - (gps_longt)))));
+  Serial.println("5");
 
   // float heading(){
   // return (atan2(y,x) * 180.0 / M_PI);
@@ -358,6 +363,7 @@ void loop() {
   }
 
   target[2] = 0; // 目標方向を0度基準にする
+  Serial.println("6");
 
   // Set the target RPM values
   // Target値の設定について：Target値の変化が急だと、応答が振動する可能性があるため、一次ローパスフィルター（一次遅れ系）を入れた方がいい
@@ -367,19 +373,23 @@ void loop() {
   // Initialize the position variable
   for (int i = 0; i < MOTOR_COUNT; i++) {
     pos[i] = 0;
+    Serial.println("7");
   }
 
   // Read the encoders
   noInterrupts(); // Disable interrupts temporarily while reading to avoid misreading
   for (int i = 0; i < MOTOR_COUNT; i++) {
     pos[i] = pos_i[i];
+    Serial.println("8");
   }
   interrupts();
+  Serial.println("9");
 
   // Control the motors
   for (int i = 0; i < MOTOR_COUNT; i++) {
     rpm[i] = ((pos[i] - prevPos[i]) / deltaT) / PPR * 60.0;
     prevPos[i] = pos[i];
+    Serial.println("10");
     if (i == 0) { // Filter the RPM using a 2nd order low pass filter
       measurement[i] = lp0.filt(rpm[i]);
     } else {
