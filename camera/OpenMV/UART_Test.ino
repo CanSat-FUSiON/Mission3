@@ -1,9 +1,8 @@
 // Camera communication settings
 #define CAMERA_START_BYTE 0x80
-#define CAMERA_PACKET_SIZE 5 //1+2+2
+#define CAMERA_PACKET_SIZE 2//1+1
 bool newCameraData = 0;
-int x_coordinate = -1;
-int y_coordinate = -1;
+int heading = -999;
 
 void setup() {
   Serial2.begin(115200);
@@ -26,17 +25,14 @@ void loop() {
         dataBuffer[i] = Serial2.read();
       }
 
-      x_coordinate = (dataBuffer[0] << 7) | dataBuffer[1];
-      y_coordinate = (dataBuffer[2] << 7) | dataBuffer[3];
+      heading = (dataBuffer[0] << 7) | dataBuffer[1];
     }
   }
   
   if (newCameraData) {
     // print the new x and y coordinates of the cone in a 240x240 window
-    Serial.println("x: ");
-    Serial.println(x_coordinate);
-    Serial.println("y: ");
-    Serial.println(y_coordinate);
+    Serial.print("Heading: ");
+    Serial.println(heading);
     // topleft = (0, 0); bottomright = (240, 240)
     newCameraData = 0;
   }
