@@ -1,4 +1,4 @@
-普通のRUN
+//普通のRUN
 
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
@@ -47,7 +47,7 @@ float Angle() {
   return (90 - (atan2(sin((LongA) - (gps_longt)), (cos(gps_lat) * tan(LatA) - sin(gps_lat) * cos((LongA) - (gps_longt))))));
 }
 
-float Distance(){
+float Distance() {
   return (TinyGPSPlus::distanceBetween(gps_lat, gps_longt, LatA, LongA ) / 1000.0);
 }
 
@@ -120,52 +120,6 @@ void printEvent(sensors_event_t* event) {
     x = event->magnetic.x;
     y = event->magnetic.y;
     z = event->magnetic.z;
-
-    float heading = atan2(y, x) * 180.0 / M_PI;
-    // float heading(){
-    // return (atan2(y,x) * 180.0 / M_PI);
-    // atan2(mag.y(), mag.x()) * 180.0 / M_PI;
-
-    float i = ((heading - Angle())+ M_PI/4);
-
-    if (i < 0) {
-      i = i + 360;
-    }
-
-    if (i <= THRESHOLD || (360 - THRESHOLD) <= i ) { //直進
-      //Serial.println("近いです！");
-      ledcWrite(CH1, 0); //直進
-      ledcWrite(CH2, 0);
-      delay(1000);
-      if (Distance() < 10) {
-        while (1) {//GPSRUN停止。画像処理フェーズへ
-          //Serial.println("ついたよー");
-        }
-      } else {
-        //Serial.println("うごけうごけ！");
-        ledcWrite(CH1, 0); //直進
-        ledcWrite(CH2, 0);
-        delay(2000);
-      }
-    } else { //右に旋回
-      if (i <= 180) {
-        Serial.println("まわれみぎ");
-        ledcWrite(CH1, 0); //右タイヤ正回転
-        ledcWrite(CH2, 2048); //左タイヤブレーキ
-        delay(1000);
-      } else { //左に旋
-        Serial.println("まわれひだり");
-        ledcWrite(CH1, 2048); //右タイヤブレーキ
-        ledcWrite(CH2, 0); //左タイヤ正回転
-        delay(1000);
-      }
-    }
-
-    Serial.print("i=");
-    Serial.print(i);
-    Serial.print("heading=");
-    Serial.println(heading);
-
 
   } else if (event->type == SENSOR_TYPE_GYROSCOPE) {
     Serial.print("Gyro:");
@@ -262,6 +216,50 @@ void loop() {
   Serial.println("--");
   delay(BNO055_SAMPLERATE_DELAY_MS);
 
- 
+  imu::Vector<3> magnet = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
 
+  float heading = atan2(magnet.y(), magnet.x()) * 180.0 / M_PI;
+  // float heading(){
+  // return (atan2(y,x) * 180.0 / M_PI);
+  // atan2(mag.y(), mag.x()) * 180.0 / M_PI;
+
+  float i = ((heading - Angle()) + M_PI / 4);
+
+  if (i < 0) {
+    i = i + 360;
+  }
+
+  if (i <= THRESHOLD || (360 - THRESHOLD) <= i ) { //直進
+    //Serial.println("近いです！");
+    ledcWrite(CH1, 0); //直進
+    ledcWrite(CH2, 0);
+    delay(1000);
+    if (Distance() < 10) {
+      while (1) {//GPSRUN停止。画像処理フェーズへ
+        //Serial.println("ついたよー");
+      }
+    } else {
+      //Serial.println("うごけうごけ！");
+      ledcWrite(CH1, 0); //直進
+      ledcWrite(CH2, 0);
+      delay(1000);
+    }
+  } else { //右に旋回
+    if (i <= 180) {
+      Serial.println("まわれみぎ");
+      ledcWrite(CH1, 0); //右タイヤ正回転
+      ledcWrite(CH2, 2048); //左タイヤブレーキ
+      delay(1000);
+    } else { //左に旋
+      Serial.println("まわれひだり");
+      ledcWrite(CH1, 2048); //右タイヤブレーキ
+      ledcWrite(CH2, 0); //左タイヤ正回転
+      delay(1000);
+    }
+  }
+
+  Serial.print("i=");
+  Serial.print(i);
+  Serial.print("heading=");
+  Serial.println(heading);
 }
