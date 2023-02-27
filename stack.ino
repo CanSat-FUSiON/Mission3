@@ -9,7 +9,7 @@
 #define dir1 27
 #define pwm2 26
 #define dir2 25
-#define STACK_THRESHOLD 0.5
+#define STACK_THRESHOLD 0.02
 
 // PWM出力設定（周波数と分解能はチャンネルのペアでは同じに設定する）
 #define CH1 1        // PWM出力チャンネル（0,1/ 2,3/ 4,5/ 6,7/ 8,9/ 10,11 /12,13 /14,15でペア）
@@ -126,7 +126,7 @@ void loop(void)
 
   if (accel < STACK_THRESHOLD) {
     delay(2000); //けっきょくこれGPSRUNフェーズに入ってからだから旋回するときとか以外止まらないはず
-    if (accel < STACK_THRESHOLD - 0.1) {
+    if (accel < STACK_THRESHOLD) {
       Serial.println("Robot is stacked!");
       ledcWrite(CH1, 4096); //後退→右に旋回→直進
       ledcWrite(CH2, 4096);
