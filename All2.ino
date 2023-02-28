@@ -32,12 +32,12 @@ volatile float referencePressure = 1013.15;//高度計算に使用する基準�
 
 // PWM出力設定（周波数と分解能はチャンネルのペアでは同じに設定する）
 #define CH1 1        // PWM出力チャンネル（0,1/ 2,3/ 4,5/ 6,7/ 8,9/ 10,11 /12,13 /14,15でペア）
-#define FREQ 20000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
+#define FREQ 19000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
 #define BIT_NUM 12  // bit数（1bit〜16bit）
 
 //MD2個使うからチャンネルも二個必要かな？1こ出善さげな感じする
 #define CH2 0        // PWM出力チャンネル（0,1/ 2,3/ 4,5/ 6,7/ 8,9/ 10,11 /12,13 /14,15でペア）
-#define FREQ 20000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
+#define FREQ 19000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
 #define BIT_NUM 12  // bit数（1bit〜16bit）
 
 #define THRESHOLD 15 //閾値の設定
@@ -289,16 +289,16 @@ void loop(void)
         Serial.println("LOW");
         digitalWrite(12, LOW);
         //キャリブレーションをここで行う
-        for (int i = 0; i <= 4096; i++) {
-          ledcWrite(CH1, i); //フル正回転 --> active ブレーキ --> フル逆回転
-          ledcWrite(CH2, -i + 4096); //フル正回転 --> active ブレーキ --> フル逆回転
+        for (int i = 1000; i <= 2596; i++) {
+          ledcWrite(CH1, i); //正回転 --> active ブレーキ --> 逆回転
+          ledcWrite(CH2, i);
           delay(1000);
         }
-        ledcWrite(CH1, 100);
-        ledcWrite(CH2, 3000);
+        ledcWrite(CH1, 1000);
+        ledcWrite(CH2, 1500);
         delay(5000);
-        ledcWrite(CH1, 3000);
-        ledcWrite(CH2, 100);
+        ledcWrite(CH1, 1500);
+        ledcWrite(CH2, 1000);
         delay(5000);
         while (1) {
           GPSRUN();//voidGPSRUNの呼び出し　うまくいってんのかな？うまくいかんかったらふつうにloopのないようぜんぶいれちゃお
@@ -485,8 +485,8 @@ void GPSRUN() {
   if (accelermetor.z() > 0) {
     if (i <= THRESHOLD || (360 - THRESHOLD) <= i ) { //直進
       //Serial.println("近いです！");
-      ledcWrite(CH1, 0); //直進
-      ledcWrite(CH2, 0);
+      ledcWrite(CH1, 1000); //直進
+      ledcWrite(CH2, 1000);
       delay(1000);
       if (Distance() < 10) {
         while (1) {//GPSRUN停止。画像処理フェーズへ
@@ -494,20 +494,20 @@ void GPSRUN() {
         }
       } else {
         //Serial.println("うごけうごけ！");
-        ledcWrite(CH1, 0); //直進
-        ledcWrite(CH2, 0);
+        ledcWrite(CH1, 1000); //直進
+        ledcWrite(CH2, 1000);
         delay(1000);
       }
     } else { //右に旋回
       if (i <= 180) {
         Serial.println("まわれみぎ");
-        ledcWrite(CH1, 0); //右タイヤ正回転
+        ledcWrite(CH1, 1500); //右タイヤ正回転
         ledcWrite(CH2, 2048); //左タイヤブレーキ
         delay(1000);
       } else { //左に旋
         Serial.println("まわれひだり");
         ledcWrite(CH1, 2048); //右タイヤブレーキ
-        ledcWrite(CH2, 0); //左タイヤ正回転
+        ledcWrite(CH2, 1500); //左タイヤ正回転
         delay(1000);
       }
     }
