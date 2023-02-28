@@ -183,8 +183,15 @@ void loop() {
     }
     if (count > 5) {
       Serial.println("Stuck!");
-      delay(1000);
-      // スタックリカバリー処理をここに記述する
+      ledcWrite(CH1, 2846); //後退→右に旋回→直進
+      ledcWrite(CH2, 2846);
+      delay(100);
+      ledcWrite(CH1, 1250);
+      ledcWrite(CH2, 2048);
+      delay(100);
+      ledcWrite(CH1, 1250);
+      ledcWrite(CH2, 1250);
+      delay(100);
       count = 0;
     }
     last_millis = millis();
