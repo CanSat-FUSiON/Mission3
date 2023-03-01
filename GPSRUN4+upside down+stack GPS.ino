@@ -23,7 +23,7 @@
 #define FREQ 19000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
 #define BIT_NUM 12  // bit数（1bit〜16bit）
 
-#define THRESHOLD 15 //閾値の設定
+#define THRESHOLD 30 //閾値の設定
 
 TinyGPSPlus gps;
 
