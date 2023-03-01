@@ -498,6 +498,7 @@ void GPSRUN() {
       delay(1000);
       if (Distance() < 10) {
         while (1) {//GPSRUN停止。画像処理フェーズへ
+          ultla();
           image();
         }
       } else {
@@ -633,14 +634,38 @@ void image() {
       }
 
       heading = (dataBuffer[0] << 7) | dataBuffer[1];
-    }
-  }
 
-  if (newCameraData) {
-    // print the new x and y coordinates of the cone in a 240x240 window
-    Serial.print("Heading: ");
-    Serial.println(heading);
-    // topleft = (0, 0); bottomright = (240, 240)
-    newCameraData = 0;
+      if (heading <= THRESHOLD || (360 - THRESHOLD) <= heading ) { //直進
+        //Serial.println("近いです！");
+        ledcWrite(CH1, 1000); //直進
+        ledcWrite(CH2, 1000);
+        delay(1000);
+        if (distance < 0.5) {//ここの判定は難だ？超音波のdistanceでいいかな？GPSとめるから
+          while (1) {
+            Serial.println("gool!!");
+          }
+        } else {
+          //Serial.println("うごけうごけ！");
+          ledcWrite(CH1, 1000); //直進
+          ledcWrite(CH2, 1000);
+          delay(1000);
+        }
+      } else { //右に旋回
+        if (heading <= 180) {
+          Serial.println("まわれみぎ");
+          ledcWrite(CH1, 1500); //右タイヤ正回転
+          ledcWrite(CH2, 2048); //左タイヤブレーキ
+          delay(1000);
+        } else { //左に旋
+          Serial.println("まわれひだり");
+          ledcWrite(CH1, 2048); //右タイヤブレーキ
+          ledcWrite(CH2, 1500); //左タイヤ正回転
+          delay(1000);
+        }
+      }
+    } else {
+      Serial.println("upside down!!");
+      //ここに動作を入れる。上下ひっくり返すための動きを実験で確認。
+    }
   }
 }
