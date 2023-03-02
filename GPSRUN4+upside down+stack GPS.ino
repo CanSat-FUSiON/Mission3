@@ -1,4 +1,5 @@
 //普通のRUN
+//これもモーターでテスト済み
 
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
