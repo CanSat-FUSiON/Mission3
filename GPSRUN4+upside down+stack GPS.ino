@@ -272,12 +272,12 @@ void loop() {
       }
     } else { //右に旋回
       if (i <= 180) {
-        Serial.println("まわれみぎ");
+        Serial.println("まわれひだり");
         ledcWrite(CH1, 1500); //右タイヤ正回転
         ledcWrite(CH2, 2048); //左タイヤブレーキ
         delay(1000);
       } else { //左に旋
-        Serial.println("まわれひだり");
+        Serial.println("まわれみぎ");
         ledcWrite(CH1, 2048); //右タイヤブレーキ
         ledcWrite(CH2, 1500); //左タイヤ正回転
         delay(1000);
