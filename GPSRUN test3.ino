@@ -1,4 +1,4 @@
-//普通のRUN
+//普通のRUN,GPSRUN4+uoside+stackの修正版
 
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
