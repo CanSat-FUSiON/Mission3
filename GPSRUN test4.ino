@@ -1,4 +1,5 @@
 //普通のRUN,GPSRUN4+uoside+stackの修正版
+//motor testでうまくいったやつ
 
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
