@@ -17,12 +17,12 @@
 
 // PWM出力設定（周波数と分解能はチャンネルのペアでは同じに設定する）
 #define CH1 1        // PWM出力チャンネル（0,1/ 2,3/ 4,5/ 6,7/ 8,9/ 10,11 /12,13 /14,15でペア）
-#define FREQ 19000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
+#define FREQ 20000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
 #define BIT_NUM 12  // bit数（1bit〜16bit）
 
 //MD2個使うからチャンネルも二個必要かな？1こ出善さげな感じする
 #define CH2 0        // PWM出力チャンネル（0,1/ 2,3/ 4,5/ 6,7/ 8,9/ 10,11 /12,13 /14,15でペア）
-#define FREQ 19000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
+#define FREQ 20000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
 #define BIT_NUM 12  // bit数（1bit〜16bit）
 
 #define THRESHOLD 30 //閾値の設定
