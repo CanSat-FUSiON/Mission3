@@ -235,12 +235,12 @@ void loop(void){
           Serial.println("まわれみぎ");
           ledcWrite(CH1, 1500); //右タイヤ正回転
           ledcWrite(CH2, 2048); //左タイヤブレーキ
-          delay(1000);
+          delay(2000);
         } else { //左に旋
           Serial.println("まわれひだり");
           ledcWrite(CH1, 2048); //右タイヤブレーキ
           ledcWrite(CH2, 1500); //左タイヤ正回転
-          delay(1000);
+          delay(2000);
         }
       }
     //}else{
