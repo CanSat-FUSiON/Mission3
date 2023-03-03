@@ -126,6 +126,24 @@ void loop() {
       ledcWrite(CH1, 2048); //右タイヤ正回転
       ledcWrite(CH2, 2048); //左タイヤブレーキ
     }
+    
+     //long forwardボタンがクリックされた場合
+    if (request.indexOf("api/v1/control/long_forward") != -1) {
+      ledcWrite(CH1, 0); 
+      ledcWrite(CH2, 0); 
+      delay(2000);
+      ledcWrite(CH1, 2048); //右タイヤ正回転
+      ledcWrite(CH2, 2048); //左タイヤブレーキ
+    }
+    
+     //short forwardボタンがクリックされた場合
+    if (request.indexOf("api/v1/control/short_forward") != -1) {
+      ledcWrite(CH1, 0); 
+      ledcWrite(CH2, 0); 
+      delay(500);
+      ledcWrite(CH1, 2048); //右タイヤ正回転
+      ledcWrite(CH2, 2048); //左タイヤブレーキ
+    }
 
     // backボタンがクリックされた場合
     if (request.indexOf("api/v1/control/back") != -1) {
