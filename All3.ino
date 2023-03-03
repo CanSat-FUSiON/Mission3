@@ -433,7 +433,7 @@ void GPSRUN() {
       Serial.print("LONG: "); Serial.println(gps_longt, 9);
       ambient.set(9, gps_lat);
       ambient.set(10, gps_longt);
-      ambient.semd();
+      ambient.send();
         
 
     }
