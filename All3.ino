@@ -11,8 +11,8 @@
 WiFiClient client;
 Ambient ambient;
 
-const char* ssid "";
-const char* password "";
+const char* ssid = "";
+const char* password = "";
 
 unsigned int channelId = 62369;
 const char *writeKey = "a1ae206c8214f215";
