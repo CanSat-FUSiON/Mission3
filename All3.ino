@@ -430,6 +430,9 @@ void GPSRUN() {
       //GPSの値取得
       Serial.print("LAT:  "); Serial.println(gps_lat, 9);
       Serial.print("LONG: "); Serial.println(gps_longt, 9);
+      ambient.set(9, gps_lat);
+      ambient.set(10, gps_longt);
+        
 
     }
   }
