@@ -32,17 +32,17 @@ void setup() {
 }
 // メイン -------------------------------------------
 void loop() {
-  for (int i = 1000; i <= 2596; i++) {
-    ledcWrite(CH1, i); //正回転 --> active ブレーキ --> 逆回転
-    ledcWrite(CH2, i);
-    delay(1000);
-  }
+  ledcWrite(CH1, 1000); //フル正回転
+  ledcWrite(CH2, 1000); //フル正回転
+  delay(5000);
+  ledcWrite(CH1, 2846); //フル逆回転4096
+  ledcWrite(CH2, 2846); //フル逆回転
+  delay(5000);
   ledcWrite(CH1, 1000);
-  ledcWrite(CH2, 1500);
+  ledcWrite(CH2, 2048);
   delay(5000);
-  ledcWrite(CH1, 1500);
+  ledcWrite(CH1, 2048);
   ledcWrite(CH2, 1000);
-  delay(5000);
   delay(5000);
 
 }
