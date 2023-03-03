@@ -1,5 +1,5 @@
-//GPSRUN4+~~~~ってやつのグラデーションver1
-
+//普通のRUN
+//これもモーターでテスト済み
 
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
@@ -255,60 +255,13 @@ void loop() {
     i = i + 360;
   }
 
-
- for (int f = 2048; f <=1000; f--) {
-  if (i <= THRESHOLD && (360 - THRESHOLD) <= i ) { //直進
-      ledcWrite(CH1, f); //直進
-      ledcWrite(CH2, f);
-      delay(1000);
-      if (Distance() < 1) {
-        while (1) { //GPSRUN停止。画像処理フェーズへ
-        }
-      } else {
-        ledcWrite(CH1, f); //直進
-        ledcWrite(CH2, f);
-        delay(2000);
-      }
-}else if (THRESHOLD < i) { //左に旋回
-      if (i <= 180) {
-        ledcWrite(CH1, f);
-        ledcWrite(CH2, 2048);//右タイヤ正回転
-        delay(1000);
-      }
-    } else if (180 < i) { //右に旋回
-      if (i < (360 - THRESHOLD)) {
-        ledcWrite(CH1, 2048);
-        ledcWrite(CH2, f); //左タイヤ正回転
-        delay(1000);
-      }
-    }
-}
-
-/*
-for (int f = 0; f <=2048; f++) {
-  if (THRESHOLD < i) { //右に旋回
-      if (i <= 180) {
-        ledcWrite(CH2, f); //左タイヤブレーキ
-        delay(1000);
-      }
-    } else if (180 < i) { //左に旋回
-      if (i < (360 - THRESHOLD)) {
-        ledcWrite(CH1, f); //右タイヤブレーキ
-        delay(1000);
-      }
-    }
-}
-*/
-
-  
-/*
   if (accelermetor.z() > 0) {
     if (i <= THRESHOLD || (360 - THRESHOLD) <= i ) { //直進
       //Serial.println("近いです！");
       ledcWrite(CH1, 1000); //直進
       ledcWrite(CH2, 1000);
       delay(1000);
-      if (Distance() < 10) {
+      if (Distance() < 1) {
         while (1) {//GPSRUN停止。画像処理フェーズへ
           //Serial.println("ついたよー");
         }
@@ -335,7 +288,6 @@ for (int f = 0; f <=2048; f++) {
     Serial.println("upside down!!");
     //ここに動作を入れる。上下ひっくり返すための動きを実験で確認。
   }
-  */
 
 
   Serial.print("i=");
