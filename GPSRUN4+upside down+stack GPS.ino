@@ -261,7 +261,7 @@ void loop() {
       ledcWrite(CH1, 1000); //直進
       ledcWrite(CH2, 1000);
       delay(1000);
-      if (Distance() < 10) {
+      if (Distance() < 1) {
         while (1) {//GPSRUN停止。画像処理フェーズへ
           //Serial.println("ついたよー");
         }
