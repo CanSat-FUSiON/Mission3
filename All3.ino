@@ -303,6 +303,7 @@ void loop(void)
       ambient.set(1, getPressure());
       ambient.set(2, altitude());
       ambient.set(3, get temprature());
+      ambient.send();
       //*/
 
       if (float(altitude()) < 1) {
@@ -432,6 +433,7 @@ void GPSRUN() {
       Serial.print("LONG: "); Serial.println(gps_longt, 9);
       ambient.set(9, gps_lat);
       ambient.set(10, gps_longt);
+      ambient.semd();
         
 
     }
@@ -509,6 +511,7 @@ void GPSRUN() {
   ambient.set(5, gyro);
   ambient.set(6, accel);
   ambient.set(7, mag);
+  ambient.send();
 
   imu::Vector<3> magnet = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
   imu::Vector<3> accelermetor = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
