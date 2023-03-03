@@ -49,7 +49,7 @@ float Angle() {
 }
 
 float Distance() {
-  return (TinyGPSPlus::distanceBetween(gps_lat, gps_longt, LatA, LongA ) / 1000.0);
+  return (TinyGPSPlus::distanceBetween(gps_lat, gps_longt, LatA, LongA ));
 }
 
 
