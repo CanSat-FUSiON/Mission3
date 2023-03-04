@@ -271,6 +271,10 @@ void setup(void)
     Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while (1);
   }
+  
+  ledcWrite(CH1, 2048);
+  ledcWrite(CH2, 2048);
+  delay(100);
 
 }
 
@@ -313,10 +317,15 @@ void loop(void)
         Serial.println("HIGH");
         digitalWrite(12, HIGH);
         delay(10000);
-
         Serial.println("LOW");
         digitalWrite(12, LOW);
         //キャリブレーションをここで行う
+        if(accelermetor.z() > 0){
+          Serial.println("upside down!!");
+          ledcWrite(CH1, 1500);
+          ledcWrite(CH2, 1500);
+          delay(2000);
+      }
         Serial.print("1");
         ledcWrite(CH1, 1000); //フル正回転
         ledcWrite(CH2, 1000); //フル正回
@@ -695,7 +704,10 @@ void image() {
       }
     } else {
       Serial.println("upside down!!");
-      //ここに動作を入れる。上下ひっくり返すための動きを実験で確認。
+      Serial.println("upside down!!");
+          ledcWrite(CH1, 1500);
+          ledcWrite(CH2, 1500);
+          delay(2000);
     }
   }
 }
