@@ -41,8 +41,8 @@ int counter = 0;
 /////////////////////////////////////////////
 
 float equator = 6378.137;
-float LatA = 35.7408;
-float LongA = 139.7429;      //コーンの緯度・経度入力
+float LatA = 30.438669205;
+float LongA = 130.926803589;      //コーンの緯度・経度入力
 
 float Angle() {
   return (90 - (atan2(sin((LongA) - (gps_longt)), (cos(gps_lat) * tan(LatA) - sin(gps_lat) * cos((LongA) - (gps_longt))))));
@@ -275,18 +275,20 @@ void loop() {
       if (i <= 180) {
         Serial.println("まわれひだり");
         ledcWrite(CH1, 1500); //右タイヤ正回転
-        ledcWrite(CH2, 2048); //左タイヤブレーキ
+        ledcWrite(CH2, 2000); //左タイヤブレーキ
         delay(2000);
       } else { //左に旋
         Serial.println("まわれみぎ");
         ledcWrite(CH1, 2048); //右タイヤブレーキ
-        ledcWrite(CH2, 1500); //左タイヤ正回転
+        ledcWrite(CH2, 2000); //左タイヤ正回転
         delay(2000);
       }
     }
   } else {
     Serial.println("upside down!!");
-    //ここに動作を入れる。上下ひっくり返すための動きを実験で確認。
+    ledcWrite(CH1, 1500); //右タイヤブレーキ
+    ledcWrite(CH2, 1500); //左タイヤ正回転
+    delay(2000);
   }
 
 
