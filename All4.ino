@@ -317,17 +317,22 @@ void loop(void)
         Serial.println("LOW");
         digitalWrite(12, LOW);
         //キャリブレーションをここで行う
-        for (int i = 1000; i <= 2596; i++) {
-          ledcWrite(CH1, i); //正回転 --> active ブレーキ --> 逆回転
-          ledcWrite(CH2, i);
-          delay(1000);
-        }
-        ledcWrite(CH1, 1000);
-        ledcWrite(CH2, 1500);
-        delay(5000);
-        ledcWrite(CH1, 1500);
-        ledcWrite(CH2, 1000);
-        delay(5000);
+         Serial.print("1");
+  ledcWrite(CH1, 1000); //フル正回転
+  ledcWrite(CH2, 1000); //フル正回
+  delay(5000);
+  Serial.print("2");
+  ledcWrite(CH1, 2846); //フル逆回転4096
+  ledcWrite(CH2, 2846); //フル逆回転
+  delay(5000);
+  Serial.print("3");
+  ledcWrite(CH1, 1000);
+  ledcWrite(CH2, 2048);
+  delay(5000);
+  Serial.print("4");
+  ledcWrite(CH1, 2048);
+  ledcWrite(CH2, 1000);
+  delay(5000);
         while (1) {
           
           GPSRUN();//voidGPSRUNの呼び出し　うまくいってんのかな？うまくいかんかったらふつうにloopのないようぜんぶいれちゃお
