@@ -11,8 +11,8 @@
 WiFiClient client;
 Ambient ambient;
 
-const char* ssid = "";
-const char* password = "";
+const char* ssid = "shiota kyohei";
+const char* password = "1234567890";
 
 unsigned int channelId = 62369;
 const char *writeKey = "a1ae206c8214f215";
@@ -302,7 +302,7 @@ void loop(void)
       
       ambient.set(1, getPressure());
       ambient.set(2, altitude());
-      ambient.set(3, get temprature());
+      ambient.set(3, getTemperature());
       ambient.send();
       //*/
 
