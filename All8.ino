@@ -67,8 +67,8 @@ int counter = 0;
 /////////////////////////////////////////////
 
 float equator = 6378.137;
-float LatA = 38.9854;
-float LongA = 135.9876;      //コーンの緯度・経度入力
+float LatA = 30.374275208;
+float LongA = 130.960083008;      //コーンの緯度・経度入力
 
 float Angle() {
   return (90 - (atan2(sin((LatA) - (gps_lat)), (cos(gps_lat) * tan(LatA) - sin(gps_lat) * cos((LatA) - (gps_lat))))));
