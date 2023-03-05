@@ -593,7 +593,8 @@ void GPSRUN() {
       delay(1000);
       if (Distance() < 1) {
         while (1) {//GPSRUN停止。画像処理フェーズへ
-          //Serial.println("ついたよー");
+          Serial.println("goooooooool
+                         ");
         }
       } else {
         //Serial.println("うごけうごけ！");
