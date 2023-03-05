@@ -42,12 +42,12 @@ volatile float referencePressure = 1048.85;//高度計算に使用する基準�
 
 // PWM出力設定（周波数と分解能はチャンネルのペアでは同じに設定する）
 #define CH1 1        // PWM出力チャンネル（0,1/ 2,3/ 4,5/ 6,7/ 8,9/ 10,11 /12,13 /14,15でペア）
-#define FREQ 20000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
+#define FREQ 5000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
 #define BIT_NUM 12  // bit数（1bit〜16bit）
 
 //MD2個使うからチャンネルも二個必要かな？1こ出善さげな感じする
 #define CH2 0        // PWM出力チャンネル（0,1/ 2,3/ 4,5/ 6,7/ 8,9/ 10,11 /12,13 /14,15でペア）
-#define FREQ 20000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
+#define FREQ 5000   // PWM出力周波数（最大周波数 : 20kHz / 2の「bit数」乗）
 #define BIT_NUM 12  // bit数（1bit〜16bit）
 
 #define THRESHOLD 20 //閾値の設定
@@ -293,7 +293,7 @@ void loop(void)
   Serial.print(getTemperature());
   Serial.println(" degree");
 
-  if (float(altitude()) > float(gnd_T) + 10) {
+  if (float(altitude()) > float(gnd_T) + 20) {
     Serial.println("over 10meters");
     delay(1000);//10mのとこから1mのところまでおちてくる時間。20秒待機した後につぎのifの判断に移るってなるはず。
 
@@ -320,7 +320,7 @@ void loop(void)
         delay(20000);//20秒まって導通
         Serial.println("HIGH");
         digitalWrite(12, HIGH);
-        delay(10000);
+        delay(20000);
         
         Serial.println("LOW");
         digitalWrite(12, LOW);
