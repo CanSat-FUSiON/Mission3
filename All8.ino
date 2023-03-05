@@ -293,7 +293,7 @@ void loop(void)
   Serial.print(getTemperature());
   Serial.println(" degree");
 
-  if (float(altitude()) > float(gnd_T) + 2) {
+  if (float(altitude()) > float(gnd_T) + 10) {
     Serial.println("over 10meters");
     delay(1000);//10mのとこから1mのところまでおちてくる時間。20秒待機した後につぎのifの判断に移るってなるはず。
 
@@ -604,13 +604,13 @@ void GPSRUN() {
     } else { //右に旋回
       if (i <= 180) {
         Serial.println("まわれひだり");
-        ledcWrite(CH1, 1500); //右タイヤ正回転
-        ledcWrite(CH2, 2000); //左タイヤブレーキ
+        ledcWrite(CH1, 1000); //右タイヤ正回転
+        ledcWrite(CH2, 2048); //左タイヤブレーキ
         delay(2000);
       } else { //左に旋
         Serial.println("まわれみぎ");
         ledcWrite(CH1, 2048); //右タイヤブレーキ
-        ledcWrite(CH2, 2000); //左タイヤ正回転
+        ledcWrite(CH2, 1000); //左タイヤ正回転
         delay(2000);
       }
     }
