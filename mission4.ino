@@ -597,7 +597,7 @@ void GPSRUN() {
       ledcWrite(CH1, 1000); //直進
       ledcWrite(CH2, 1000);
       delay(1000);
-      if (Distance() < 10) {//10mで停止してしまう
+      if (Distance() < 20) {//10mで停止してしまう
         while (1) {//GPSRUN停止。画像処理フェーズへ
           Serial.println( "goooooooool" );
           remort();
